@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NScheme.compiler;
+using Interpretor.compiler;
 
 namespace NScheme
 {
@@ -14,15 +15,9 @@ namespace NScheme
             {
                 public static NSObject Add(NSExpression[] args, NSScope scope)
                 {
-                    //var iter = args.Select(obj => obj.Evaluate(scope)).GetEnumerator();
-                    //double db = 0.0;
-                    //Int64 i = 0;
-                    //while(iter.MoveNext())
-                    //{
-                    //    var v = iter.Current;
-                    //    if (v is NSFloat)
-                    //        return iter.
-                    //}
+                    //var ret = args.Evaluate<NSInteger>(scope);
+                    //double dbv = ret.Aggregate((a, b) => (double.IsNaN(b.valFp) ? a.valFp : a.valFp + b.valFp));
+                    //Int64 intv = ret.Aggregate((a, b) => (double.IsNaN(b.valFp) ? a.val + b.val : a.val));
                     return args.Select(obj => obj.Evaluate(scope)).Cast<NSInteger>().Sum(n => n);
                 }
 
@@ -68,8 +63,8 @@ namespace NScheme
                     (args.Length == 2).OrThrows("expect two parameters");
                     var b0 = args[0];
                     var b1 = args[1].Evaluate(scope);
-                    scope.Undefine(b0.Token.Value);
-                    scope.Define(b0.Token.Value, b1);
+                    scope.Undefine(b0.Value);
+                    scope.Define(b0.Value, b1);
                     return NSBool.NSTrue;
                 }
 

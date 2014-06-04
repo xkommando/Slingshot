@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NScheme.compiler;
 
 namespace NScheme
 {
@@ -165,129 +166,6 @@ namespace NScheme
 
 
         // for "abc".Join(...)
-
-        public static NSScope LoadLib(this NSScope scope, string lib)
-        {
-            using (var sr = new StreamReader(lib))
-            {
-                string code;
-                if (null != (code = sr.ReadToEnd()))
-                {
-                    try
-                    {
-                        Console.WriteLine(code.ParseSequence().Evaluate(scope).Last().ToString());
-                    }
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine("Failed to Load library[{0}]".Fmt(lib));
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine(ex.StackTrace);
-                    }
-                }
-            }
-            return scope;
-        }
-
-        public static void KeepInterpretingInConsole(this NSScope scope, 
-                                                    Func<String, NSScope, NSObject> evaluate)
-        {
-            while (true)
-            {
-                try
-                {
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("NS >> ");
-                    String code;
-                    if (!String.IsNullOrWhiteSpace(code = Console.ReadLine()))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("NS >> " + evaluate(code, scope));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("NS >> " + ex.Message);
-                    Console.WriteLine(">>Source " + ex.Source);
-                    Console.WriteLine(">>Trace " + ex.StackTrace);
-                }
-            }
-        }
-
-        public static IEnumerable<T> Evaluate<T>(this IEnumerable<NSExpression> expressions, NSScope scope)
-        where T : NSObject
-        {
-            return expressions.Evaluate(scope).Cast<T>();
-        }
-
-        public static IEnumerable<NSObject> Evaluate(this IEnumerable<NSExpression> expressions, NSScope scope)
-        {
-            return expressions.Select(exp => exp.Evaluate(scope));
-        }
-
-
-        public static NSBool ChainRelation(this NSExpression[] expressions, NSScope scope, Func<NSInteger, NSInteger, Boolean> relation)
-        {
-            (expressions.Length > 1).OrThrows("Must have more than 1 parameter in relation operation.");
-            NSInteger current = (NSInteger)expressions[0].Evaluate(scope);
-            foreach (var obj in expressions.Skip(1))
-            {
-                NSInteger next = (NSInteger)obj.Evaluate(scope);
-                if (relation(current, next))
-                {
-                    current = next;
-                }
-                else
-                {
-                    return NSBool.False;
-                }
-            }
-            return NSBool.True;
-        }
-
-        public static NSList RetrieveSList(this NSExpression[] expressions, NSScope scope, String operationName)
-        {
-            NSList list = null;
-            (expressions.Length == 1 && (list = (expressions[0].Evaluate(scope) as NSList)) != null)
-                .OrThrows("[" + operationName + "] must apply to a list");
-            return list;
-        }
-
-        public static String[] Tokenize(String text)
-        {
-            String[] tokens = text.Replace("(", " ( ").Replace(")", " ) ").Split(" \t\r\n".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-            return tokens;
-        }
-
-        
-        public static List<NSExpression> ParseSequence(this String code)
-        {
-            var program = new NSExpression(value: "", parent: null);
-            var current = program;
-            foreach (var lex in Tokenize(code))
-            {
-                if (lex == "(")
-                {
-                    var newNode = new NSExpression(value: "(", parent: current);
-                    current.Children.Add(newNode);
-                    current = newNode;
-                }
-                else if (lex == ")")
-                {
-                    current = current.Parent;
-                }
-                else
-                {
-                    current.Children.Add(new NSExpression(value: lex, parent: current));
-                }
-            }
-            return program.Children;
-        }
-
-        public static NSExpression ParseAsIScheme(this String code)
-        {
-            return ParseSequence(code)[0];
-        }
     }
 
     public interface IBidEnumerator<T> : IEnumerator<T>

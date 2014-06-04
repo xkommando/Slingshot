@@ -1,4 +1,4 @@
-﻿(def first 
+(def first 
 	(func(ls)
 		(car ls)
 	)
@@ -54,10 +54,6 @@
 )
 
 
-(def pow2 (func(a)(** a 2)))
-(def mul(func(a b)(* a b)))
-(def add(func(a b)(+ a b)))
-
 (def sum
 	(func(ls)
 		(if (null? ls)
@@ -66,6 +62,12 @@
 		)
 	)
 )
+
+
+
+(def pow2 (func(a)(** a 2)))
+(def mul(func(a b)(* a b)))
+(def add(func(a b)(+ a b)))
 
 (def als (list 1 2 3 4 5))
 
