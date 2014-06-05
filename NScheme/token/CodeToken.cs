@@ -37,42 +37,32 @@ namespace NScheme
                 return hashCache;
             }
 
+            public static readonly Dictionary<string, CodeToken> KEY_WORDS = new Dictionary<string, CodeToken> 
+            {
+                {"def" , new CodeToken(TokenType.Def, "def")},
+                {"undef" , new CodeToken(TokenType.UnDef, "undef")},
+
+                {"func" , new CodeToken(TokenType.Func, "func")},
+                {"if" , new CodeToken(TokenType.If, "if")},
+                {"begin" , new CodeToken(TokenType.Begin, "begin")},
+                
+                {"list" , new CodeToken(TokenType.List, "list")},
+                {"True" , new CodeToken(TokenType.True, "True")},
+                {"False" , new CodeToken(TokenType.False, "False")}
+            };
+
             public static CodeToken Build(TokenType type, String value)
             {
-                TokenType tp;
                 if (type == TokenType.Identifier)
                 {
-                    switch (value)
-                    {
-                        // reserved  keywords
-                        case "and": tp = TokenType.And;     value = null; break;
-                        case "or": tp = TokenType.Or;       value = null; break;
-                        case "not": tp = TokenType.Not;     value = null; break;
-
-                        case "def": tp = TokenType.Def; value = null; break;
-                        case "undef": tp = TokenType.UnDef; break;
-                        case "func": tp = TokenType.Func;   value = null; break;
-                        case "if": tp = TokenType.If; break;
-                        case "begin": tp = TokenType.Begin; break;
-                        case "list": tp = TokenType.List; break;
-                        case "#t": tp = TokenType.True; break;
-                        case "#f": tp = TokenType.False; break;
-                       // case "elif": tp = TokenType.Elif; break;
-                        //case "else": tp = TokenType.Else; break;
-
-                        default: tp = TokenType.Identifier; break;
-                    }
+                    CodeToken tk;
+                    KEY_WORDS.TryGetValue(value, out tk);
+                    return tk == null ? new CodeToken(type, value) : tk;
                 }
                 else if (type == TokenType.String)
-                {
-                    tp = TokenType.String;
-                    value = value.UnEscapeStr();
-                }
+                    return new CodeToken(TokenType.String, value.UnEscapeStr());
                 else
-                {
-                    tp = type;
-                }
-                return new CodeToken(tp, value);
+                    return new CodeToken(type, value);
             }
 
         }

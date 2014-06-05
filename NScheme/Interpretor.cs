@@ -39,6 +39,11 @@ namespace NScheme
                .BuildIn("!", Functions.Booleans.Not)
                .BuildIn("^", Functions.Booleans.Xor)
                .BuildIn("~", Functions.Booleans.Xnor)
+               .BuildIn("and", Functions.Booleans.And)
+               .BuildIn("or", Functions.Booleans.Or)
+               .BuildIn("not", Functions.Booleans.Not)
+               .BuildIn("xor", Functions.Booleans.Xor)
+               .BuildIn("xnor", Functions.Booleans.Xnor)
 
                .BuildIn("car", (nsargs, scope) => nsargs.RetrieveSList(scope, "car").First())
                .BuildIn("cdr", (nsargs, scope) => new NSList(nsargs.RetrieveSList(scope, "cdr").Skip(1)))
@@ -47,21 +52,20 @@ namespace NScheme
 
                .BuildIn("clone", (nsargs, scope) => 
                    (scope.Define(nsargs[0].Token.Value, nsargs[1].Evaluate(scope).Clone())))
+                .BuildIn("typeof", (nsargs, scope) => (NSString)nsargs[0].Evaluate(scope).GetType().FullName)
             /// <summary>
             /// append atom + list || list + atom || list + list
             /// </summary>
-            /// <param name="args"></param>
-            /// <param name="scope"></param>
-            /// <returns></returns>
                .BuildIn("append", Functions.Lists.Append)
                .BuildIn("pop-back!", Functions.Lists.Popback)
                .BuildIn("pop-front!", Functions.Lists.PopFront)
                .BuildIn("set-at!", Functions.Lists.SetAt)
                .BuildIn("get-at", Functions.Lists.GetAt)
-
-               .BuildIn("length", (nsargs, scope) => (nsargs.Evaluate<NSList>(scope).First().Length))
+            /// <summary>
+            /// (length a-list) || (length a-str)
+            /// </summary>
+               .BuildIn("length", Functions.Lists.Length)
                .BuildIn("null?", (nsargs, scope) => nsargs.RetrieveSList(scope, "null?").Count() == 0);
-
                
     }
 }

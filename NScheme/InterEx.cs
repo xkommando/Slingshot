@@ -9,11 +9,12 @@ namespace NScheme
     /// <summary>
     /// extension functions for the interpretor
     /// </summary>
-    public static class InterEx
+    public static class InterExtension
     {
 
         public static NSScope LoadLib(this NSScope scope, string lib)
         {
+            scope.StdOut.WriteLine(">>> Loading Library [{0}] ...".Fmt(lib));
             using (var sr = new StreamReader(lib))
             {
                 string code;
@@ -21,13 +22,18 @@ namespace NScheme
                 {
                     try
                     {
-                        code.ParseSequence().Evaluate(scope).ForEach(a => Console.WriteLine(a));
-                    }
+                        // prevent lazy eval
+                        foreach (var exp in code.ParseExpSeq())
+                            exp.Evaluate(scope);
+
+                        scope.variableTable.ForEach(a => scope.StdOut.WriteLine(">>> Added {0} : {1} "
+                            .Fmt( a.Key, a.Value.GetType())));
+                    }//
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Failed to Load library[{0}]".Fmt(lib));
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine(ex.StackTrace);
+                        scope.StdOut.WriteLine("Failed to Load library[{0}]".Fmt(lib));
+                        scope.StdOut.WriteLine(ex);
+                        ex.StackTrace.Split('\n').Take(3).ForEach(a => scope.StdOut.WriteLine(a));
                     }
                 }
             }
@@ -42,20 +48,19 @@ namespace NScheme
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("NS >> ");
+                    Console.Write(">>> ");
                     String code;
                     if (!String.IsNullOrWhiteSpace(code = Console.ReadLine()))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("NS >> " + evaluate(code, scope));
+                        Console.WriteLine(">>> " + evaluate(code, scope));
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("NS >> " + ex.Message);
-                    Console.WriteLine(">>Source " + ex.Source);
-                    Console.WriteLine(">>Trace " + ex.StackTrace);
+                    Console.WriteLine(">>> " + ex);
+                    ex.StackTrace.Split("at".ToCharArray()).Take(3).ForEach(a => scope.StdOut.WriteLine(a));
                 }
             }
         }
@@ -72,7 +77,8 @@ namespace NScheme
         }
 
 
-        public static NSBool ChainRelation(this NSExpression[] expressions, NSScope scope, Func<NSInteger, NSInteger, Boolean> relation)
+        public static NSBool ChainRelation(this NSExpression[] expressions, 
+                                            NSScope scope, Func<NSInteger, NSInteger, Boolean> relation)
         {
             (expressions.Length > 1).OrThrows("Must have more than 1 parameter in relation operation.");
             NSInteger current = (NSInteger)expressions[0].Evaluate(scope);
@@ -96,6 +102,7 @@ namespace NScheme
             NSList list = null;
             (expressions.Length == 1 && (list = (expressions[0].Evaluate(scope) as NSList)) != null)
                 .OrThrows("[" + operationName + "] must apply to a list");
+
             return list;
         }
 
@@ -105,23 +112,26 @@ namespace NScheme
             return tokens;
         }
 
-        public static List<NSExpression> ParseSequence(this String code)
+        public static List<NSExpression> ParseExpSeq(this String code)
         {
-            var program = new NSExpression(null, null);
-            var current = program;
             var file = new CodeFile();
             file.SourceCode = code;
             file.Parse();
             (file.ErrorList.Count < 1).OrThrows(file.ErrrorStr());
 
-            List<CodeToken> toks = file.TokenList;
+            var program = new NSExpression(null, null);
+            var current = program;
 
             foreach (var lex in file.TokenList)
             {
+                //if (lex.Type == TokenType.Char)
+                    //Console.WriteLine(lex.Type + "      [" + lex.Value+"]");
+
                 if (lex.Type == TokenType.LeftParentheses)
                 {
                     var newNode = new NSExpression(tok: lex, parent: current);
                     current.Children.Add(newNode);
+                    //Console.WriteLine("current.Children.Add(newNode); (    child count " + current.Children.Count);
                     current = newNode;
                 }
                 else if (lex.Type == TokenType.RightParenthese)
@@ -130,6 +140,7 @@ namespace NScheme
                 }
                 else
                 {
+                  //  Console.WriteLine("add " + lex.Value);
                     current.Children.Add(new NSExpression(tok: lex, parent: current));
                 }
             }
@@ -138,7 +149,7 @@ namespace NScheme
 
         public static NSExpression ParseAsIScheme(this String code)
         {
-            return ParseSequence(code)[0];
+            return ParseExpSeq(code)[0];
         }
     }
 }

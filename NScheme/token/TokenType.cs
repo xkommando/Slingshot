@@ -10,6 +10,7 @@ namespace NScheme
             Float,
             SciNumber,
             String,
+            Char,
             //------------------ 16
             LeftBracket,        //[
             RightBracket,       //]

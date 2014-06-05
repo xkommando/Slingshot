@@ -160,6 +160,22 @@ namespace NScheme
                         state_ = State.InString;
                         break;
 
+                    case '\'':
+                        if (currentIdx_ < SourceCode.Count() - 2)
+                        {
+                            var s1 = SourceCode[currentIdx_ + 1];
+                            var s2 = SourceCode[currentIdx_ + 2];
+                            if (s2 == '\'')
+                            {
+                                currentIdx_++;
+                                addToken(1, TokenType.Char);
+                                currentIdx_++;
+                            }
+                            else
+                                addError("Cannot add Char[" + ch + "]");
+                        }
+                        break;
+
                     case '+':
                         if (currentIdx_ != SourceCode.Count() - 1)
                         {
@@ -194,6 +210,11 @@ namespace NScheme
                             {
                                 currentIdx_++;
                                 addToken(2, TokenType.SubAsign);
+                            }
+                            else if (next.IsDigit())
+                            {
+                                tokenLeft_ = currentIdx_;
+                                state_ = State.InInteger;
                             }
                             else
                                 addToken(1, TokenType.Sub);
@@ -628,10 +649,12 @@ namespace NScheme
                     return;
                 PrintErrors(writer);
             }
+            
             public void PrintErrors()
             {
                 PrintErrors(Console.Out);
             }
+
             public void PrintErrors(TextWriter writer)
             {
                 writer.WriteLine("{0} Errors:".Fmt(ErrorList.Count));

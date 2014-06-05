@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace NScheme
 {
@@ -10,13 +10,16 @@ namespace NScheme
     {
         public class NSScope
         {
+            public TextWriter StdOut;
             public NSScope Parent { get; private set; }
-            private Dictionary<string, NSObject> variableTable;
+            public Dictionary<string, NSObject> variableTable { get; private set; }
 
             public NSScope(NSScope parent)
             {
                 this.Parent = parent;
                 this.variableTable = new Dictionary<string, NSObject>(32);
+                this.StdOut = parent == null ? null : parent.StdOut;
+                this.StdOut = StdOut ?? Console.Out;
             }
 
             public NSObject Find(String name)

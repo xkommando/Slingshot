@@ -9,7 +9,7 @@ namespace NScheme
     {
         public class NSString : NSObject
         {
-            string val;
+            public string val;
             public NSString(string v)
             {
                 this.val = v;
@@ -33,7 +33,12 @@ namespace NScheme
             {
                 return new NSString(v);
             }
-
+            public override bool Eq(NSObject other)
+            {
+                return other is NSString ?
+                                this.val.Equals(((NSString)other).val)
+                                : false;
+            }
     
 
         }

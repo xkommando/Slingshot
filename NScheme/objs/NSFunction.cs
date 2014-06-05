@@ -78,6 +78,13 @@ namespace NScheme
                 NSScope newScope = this.Scope.Parent.SpawnScopeWith(this.Parameters, newArguments);
                 return new NSFunction(this.Body, this.Parameters, newScope);
             }
+
+            public override bool Eq(NSObject other)
+            {
+                return other is NSFunction ?
+                                this.Body == ((NSFunction)other).Body
+                                : false;
+            }
         }
     }
 }

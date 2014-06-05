@@ -32,6 +32,12 @@ namespace NScheme
             {
                 return value ? NSTrue : NSFalse;
             }
+            public override bool Eq(NSObject other)
+            {
+                return other is NSBool ?
+                                this == other
+                                : false;
+            }
         }
 
         public class NSInteger : NSObject
@@ -70,10 +76,12 @@ namespace NScheme
             {
                 return new NSInteger((Int64)value);
             }
-            //public static implicit operator NSInteger(NSFloat value)
-            //{
-            //    return new NSInteger((Int64)value.val);
-            //}
+            public override bool Eq(NSObject other)
+            {
+                return other is NSInteger ?
+                                this.val == ((NSInteger)other).val
+                                : false;
+            }
         }
 
         public class NSFloat : NSObject
@@ -108,6 +116,13 @@ namespace NScheme
             public static implicit operator NSFloat(NSInteger value)
             {
                 return new NSFloat(value.val);
+            }
+
+            public override bool Eq(NSObject other)
+            {
+                return other is NSFloat ?
+                                Math.Abs(this.val - ((NSFloat)other).val) < 0.000000001
+                                : false;
             }
 
         }

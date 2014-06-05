@@ -65,6 +65,13 @@ namespace NScheme
             {
                 return this.ls.GetEnumerator();
             }
+
+            public override bool Eq(NSObject nSList)
+            {
+                return nSList is NSList ?
+                                ls.Equals(((NSList)nSList).ls)
+                                : false;
+            }
         }
     }
 }

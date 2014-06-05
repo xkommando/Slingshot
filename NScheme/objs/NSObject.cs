@@ -29,6 +29,7 @@ namespace NScheme
                 return (NSString)value;
             }
 
+            public abstract bool Eq(NSObject other);
             public abstract NSObject Clone();
         }
 

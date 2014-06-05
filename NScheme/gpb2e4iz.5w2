@@ -12,7 +12,7 @@ namespace NScheme
         {
             public static class Numbers
             {
-                public static NSObject Add(IEnumerable<NSExpression> args, NSScope scope)
+                public static NSObject Add(NSExpression[] args, NSScope scope)
                 {
                     var iter = args.Select(obj => obj.Evaluate(scope)).GetEnumerator();
                     double db = args.Select(a => a.Evaluate(scope)).Where(a => a is NSFloat).Cast<NSFloat>().Sum(a => a);
@@ -22,18 +22,13 @@ namespace NScheme
 
                 public static NSObject Sub(NSExpression[] args, NSScope scope)
                 {
+                    //var nums = args.Select(obj => obj.Evaluate(scope)).ToArray();
                     var first = args[0].Evaluate(scope);
-                    var b = first is NSFloat ? (NSFloat)first : (NSInteger)first;
                     if (args.Length == 1)
-                        return - b;
+                        return -(first is NSFloat ? (NSFloat)first : (NSInteger)first);
                     else
-                    {
-                        var sec = Add(args.Skip(1), scope);
-                        var c = sec is NSFloat ? (NSFloat)sec : (NSInteger)sec;
-                        return b - c;
-                    }
+                        return first - nums.Skip(1).Sum(v => v);
                 }
-
 
                 public static NSObject Power(NSExpression[] args, NSScope scope)
                 {
@@ -46,44 +41,29 @@ namespace NScheme
 
                 public static NSObject Mul(NSExpression[] args, NSScope scope)
                 {
-                    var iter = args.Select(obj => obj.Evaluate(scope)).GetEnumerator();
-                    double db = 1.0;
-                    var dbE = args.Select(a => a.Evaluate(scope))
-                                    .Where(a => a is NSFloat);
-                    if (dbE.Count() > 0)
-                        db = dbE.Cast<NSFloat>().
-                                    Aggregate((a, b) => a * b);
-
-                    Int64 i = 1;
-                    var iE = args.Select(a => a.Evaluate(scope))
-                                    .Where(a => a is NSInteger);
-                    if (iE.Count() > 0)
-                        i = iE.Cast<NSInteger>().
-                                    Aggregate((a, b) => a * b);
-
-                    return -0.000000001 < db && db < 0.000000001 ? i : db * i;
+                    return args.Evaluate<NSInteger>(scope).Aggregate((a, b) => a * b);
                 }
 
                 public static NSObject Mod(NSExpression[] args, NSScope scope)
                 {
                     (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
                     var two = args.Evaluate<NSInteger>(scope).ToArray();
-                    
                     return two[0] % two[1];
                 }
 
                 public static NSObject Abs(NSExpression[] args, NSScope scope)
                 {
-                    //(args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
+                    (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
                     var ret = args.Evaluate(scope).First();
                     return ret is NSFloat ? Math.Abs((NSFloat)ret) : Math.Abs((NSInteger)ret);
+                    //return (NSInteger)Math.Abs((decimal)ret.First());
                 }
 
                 public static NSObject Eq(NSExpression[] args, NSScope scope)
                 {
                     (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                    var nums = args.Select(o => o.Evaluate(scope)).ToArray();
-                    return nums[0].Eq(nums[1]);
+                    var nums = args.Select(o => o.Evaluate(scope)).Cast<NSInteger>().ToArray();
+                    return nums[0] == nums[1];
                 }
 
                 public static NSObject Set(NSExpression[] args, NSScope scope)
@@ -105,13 +85,11 @@ namespace NScheme
                     (args.Length > 1).OrThrows("expect two or more parameter");
                     return args.All(arg => (NSBool)args.Evaluate(scope));
                 }
-
                 public static NSObject Or(NSExpression[] args, NSScope scope)
                 {
                     (args.Length == 2).OrThrows("expect two parameters");
                     return args.Any(arg => (NSBool)arg.Evaluate(scope));
                 }
-
                 public static NSObject Not(NSExpression[] args, NSScope scope)
                 {
                     (args.Length == 1).OrThrows("expect one parameter");
@@ -120,7 +98,7 @@ namespace NScheme
 
                 public static NSObject Xor(NSExpression[] args, NSScope scope)
                 {
-                    (args.Length == 2).OrThrows("expect two parameter");
+                    (args.Length == 2).OrThrows("expect one or more parameter");
                     var ret = args.Evaluate<NSBool>(scope);
                     var b0 = ret.ElementAt(0);
                     var b1 = ret.ElementAt(1);
@@ -139,19 +117,6 @@ namespace NScheme
 
             public static class Lists
             {
-                /// <summary>
-                /// (length a-list) || (length a-str)
-                /// </summary>
-                public static NSObject Length(NSExpression[] args, NSScope scope)
-                {
-                    //nsargs.Evaluate<NSList>(scope).First().Length
-                    (args.Length == 1).OrThrows("expect one parameter");
-                    var v = args.Evaluate(scope).First();
-                    if (v is NSList)
-                        return ((NSList)v).Length;
-                    else
-                        return ((NSString)v).val.Length;
-                }
 
                 public static NSObject Cons(NSExpression[] args, NSScope scope)
                 {
@@ -166,7 +131,6 @@ namespace NScheme
                     return new NSList(ls);
 
                 }
-
                 /// <summary>
                 /// append atom + list || list + atom || list + list
                 /// </summary>
@@ -175,7 +139,11 @@ namespace NScheme
                 /// <returns></returns>
                 public static NSObject Append(NSExpression[] args, NSScope scope)
                 {
-
+                    //NSList list0 = null, list1 = null;
+                    //(args.Length == 2
+                    //    && (list0 = (args[0].Evaluate(scope) as NSList)) != null
+                    //    && (list1 = (args[1].Evaluate(scope) as NSList)) != null
+                    //).OrThrows("Expect two lists, get[{0}] and [{1}]".Fmt(args[0].Evaluate(scope).GetType(),                                                                args[1].Evaluate(scope).GetType()));
                     NSObject o1 = args[0].Evaluate(scope);
                     NSObject o2 = args[1].Evaluate(scope);
                     NSList nsl;//o1 is NSList ? (NSList)o1 : (NSList)o2;
@@ -206,7 +174,6 @@ namespace NScheme
 
                     return list.PopBack();
                 }
-
                 public static NSObject PopFront(NSExpression[] args, NSScope scope)
                 {
                     NSList list = null;
@@ -225,10 +192,11 @@ namespace NScheme
                     (args.Length == 3
                         && (list = (args[0].Evaluate(scope) as NSList)) != null
                         && (idx = (args[1]).Evaluate(scope) as NSInteger) != null
-                        && (newval = (args[2]).Evaluate(scope)) != null
-                    ).OrThrows("Expect a list, an integer and a new NSObject, get [{0}] and [{1}]]"
+                        && (newval = (args[2]).Evaluate(scope) as NSObject) != null
+                    ).OrThrows("Expect a list, an integer and a new NSObject, get [{0}], [{1}] and [{2}]"
                                 .Fmt(args[0].Evaluate(scope).GetType(),
-                                                    args[1].Evaluate(scope).GetType()
+                                                    args[1].Evaluate(scope).GetType(),
+                                                    args[2].Evaluate(scope).GetType()
                                                 ));
                     list[(int)idx] = newval;
                     return newval;

@@ -64,6 +64,7 @@
     <Compile Include="Functions.cs" />
     <Compile Include="InterEx.cs" />
     <Compile Include="Interpretor.cs" />
+    <Compile Include="objs\NSChar.cs" />
     <Compile Include="objs\NSList.cs" />
     <Compile Include="objs\NSNumeric.cs" />
     <Compile Include="objs\NSString.cs" />
@@ -78,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="stdfunc.ns" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

@@ -51,6 +51,13 @@ namespace NScheme
 
                             case TokenType.String:
                                 return tok.Value;
+                            case TokenType.Char:
+                                return new NSChar(tok.Value[0]);
+
+                            case TokenType.True:
+                                return NSBool.NSTrue;
+                            case TokenType.False:
+                                return NSBool.NSFalse;
 
                             case TokenType.Identifier:
                                 return scope.Find(tok.Value);
@@ -59,7 +66,7 @@ namespace NScheme
                     {
                         var first = current.Children[0];
                         tok = first.Token;
-          
+                        /// @see Code Token KEY_WORDS
                         switch(tok.Type)
                         {
                             case TokenType.Def:
@@ -75,6 +82,11 @@ namespace NScheme
                                 NSScope newScope = new NSScope(scope);
                                 return new NSFunction(body, parameters, newScope);
 
+                            case TokenType.If:
+                                NSBool condition = (NSBool)(current.Children[1].Evaluate(scope));
+                                current = condition ? current.Children[2] : current.Children[3];
+                                continue;
+
                             case TokenType.Begin:
                                 NSObject ret = null;
                                 foreach (NSExpression statement in current.Children.Skip(1))
@@ -82,11 +94,6 @@ namespace NScheme
                                     ret = statement.Evaluate(scope);
                                 }
                                 return ret;
-
-                            case TokenType.If:
-                                    NSBool condition = (NSBool)(current.Children[1].Evaluate(scope));
-                                    current = condition ? current.Children[2] : current.Children[3];
-                                    continue;
 
                             case TokenType.List:
                         			return new NSList(current.Children.Skip(1).Select(exp => exp.Evaluate(scope)));
