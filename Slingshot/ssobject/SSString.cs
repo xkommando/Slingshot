@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Objects
     {
         public class SSString : SSObject
         {

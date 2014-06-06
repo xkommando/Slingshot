@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Slingshot.compiler;
+using Slingshot.Compiler;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Objects
     {
         public abstract class SSObject : ICloneable
         {

@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Slingshot.compiler;
+using Slingshot.Compiler;
+using Slingshot.Objects;
 
 namespace Slingshot
 {

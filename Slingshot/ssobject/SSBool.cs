@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Slingshot.compiler;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Objects
     {
         public class SSBool : SSObject, ISSNumber
         {

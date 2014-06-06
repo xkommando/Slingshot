@@ -1,7 +1,7 @@
 ﻿
 namespace Slingshot
 {
-    namespace compiler
+    namespace Compiler
     {
 
         public enum TokenType

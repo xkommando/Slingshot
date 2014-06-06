@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Slingshot.compiler;
+using Slingshot.Compiler;
+using Slingshot.Objects;
+using Slingshot.Buildin;
 
 namespace Slingshot
 {
@@ -46,8 +47,11 @@ namespace Slingshot
 
                .BuildIn("car", (nsargs, scope) => nsargs.RetrieveSList(scope, "car").First())
                .BuildIn("cdr", (nsargs, scope) => new SSList(nsargs.RetrieveSList(scope, "cdr").Skip(1)))
-               .BuildIn("cons", Functions.Lists.StrToLs)
+               .BuildIn("cons", Functions.Lists.Cons)
                .BuildIn("list?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSList)
+               .BuildIn("string?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSString)
+               .BuildIn("integer?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSInteger)
+               .BuildIn("float?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSFloat)
 
                .BuildIn("clone", (nsargs, scope) => 
                    (scope.Define(nsargs[0].Token.Value, (SSObject)nsargs[1].Evaluate(scope).Clone())))

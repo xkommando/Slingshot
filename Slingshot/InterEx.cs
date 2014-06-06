@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Slingshot.compiler;
+using Slingshot.Compiler;
+using Slingshot.Objects;
 
 namespace Slingshot
 {
@@ -40,7 +41,7 @@ namespace Slingshot
         }
 
         public static void InterpretingInConsole(this SSScope scope,
-                                                    Func<String, SSScope, SSObject> evaluate)
+                                                    Func<string, SSScope, SSObject> evaluate)
         {
             while (true)
             {

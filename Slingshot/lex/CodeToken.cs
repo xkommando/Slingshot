@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Compiler
     {
         public class CodeToken
         {

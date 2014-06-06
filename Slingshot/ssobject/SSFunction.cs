@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Slingshot.Compiler;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Objects
     {
         public class SSFunction : SSObject
         {

@@ -7,7 +7,7 @@ namespace Slingshot
 {
 
     #region lexcial
-    namespace compiler
+    namespace Compiler
     {
         internal enum State
         {
