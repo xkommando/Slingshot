@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using NScheme.compiler;
+using Slingshot.compiler;
 
-namespace NScheme
+namespace Slingshot
 {
     /// <summary>
     /// extension functions for the interpretor
@@ -12,7 +12,7 @@ namespace NScheme
     public static class InterExtension
     {
 
-        public static NSScope LoadLib(this NSScope scope, string lib)
+        public static SSScope LoadLib(this SSScope scope, string lib)
         {
             scope.StdOut.WriteLine(">>> Loading Library [{0}] ...".Fmt(lib));
             using (var sr = new StreamReader(lib))
@@ -25,23 +25,22 @@ namespace NScheme
                         // prevent lazy eval
                         foreach (var exp in code.ParseExpSeq())
                             exp.Evaluate(scope);
-
-                        scope.variableTable.ForEach(a => scope.StdOut.WriteLine(">>> Added {0} : {1} "
-                            .Fmt( a.Key, a.Value.GetType())));
                     }//
                     catch (Exception ex)
                     {
                         scope.StdOut.WriteLine("Failed to Load library[{0}]".Fmt(lib));
                         scope.StdOut.WriteLine(ex);
-                        ex.StackTrace.Split('\n').Take(3).ForEach(a => scope.StdOut.WriteLine(a));
+                        ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.StdOut.WriteLine(a));
                     }
+                    scope.variableTable.ForEach(a => scope.StdOut.WriteLine(">>> Added {0} : {1} "
+                        .Fmt(a.Key, a.Value.GetType())));
                 }
             }
             return scope;
         }
 
-        public static void InterpretingInConsole(this NSScope scope,
-                                                    Func<String, NSScope, NSObject> evaluate)
+        public static void InterpretingInConsole(this SSScope scope,
+                                                    Func<String, SSScope, SSObject> evaluate)
         {
             while (true)
             {
@@ -65,42 +64,42 @@ namespace NScheme
             }
         }
 
-        public static IEnumerable<T> Evaluate<T>(this IEnumerable<NSExpression> expressions, NSScope scope)
-        where T : NSObject
+        public static IEnumerable<T> Evaluate<T>(this IEnumerable<SSExpression> expressions, SSScope scope)
+        where T : SSObject
         {
             return expressions.Evaluate(scope).Cast<T>();
         }
 
-        public static IEnumerable<NSObject> Evaluate(this IEnumerable<NSExpression> expressions, NSScope scope)
+        public static IEnumerable<SSObject> Evaluate(this IEnumerable<SSExpression> expressions, SSScope scope)
         {
             return expressions.Select(exp => exp.Evaluate(scope));
         }
 
 
-        public static NSBool ChainRelation(this NSExpression[] expressions, 
-                                            NSScope scope, Func<NSInteger, NSInteger, Boolean> relation)
+        public static SSBool ChainRelation(this SSExpression[] expressions,
+                                            SSScope scope, Func<ISSNumber, ISSNumber, Boolean> relation)
         {
             (expressions.Length > 1).OrThrows("Must have more than 1 parameter in relation operation.");
-            NSInteger current = (NSInteger)expressions[0].Evaluate(scope);
+            var current = (ISSNumber)expressions[0].Evaluate(scope);
             foreach (var obj in expressions.Skip(1))
             {
-                var next = (NSInteger)obj.Evaluate(scope);
+                var next = (SSInteger)obj.Evaluate(scope);
                 if (relation(current, next))
                 {
                     current = next;
                 }
                 else
                 {
-                    return NSBool.NSFalse;
+                    return SSBool.NSFalse;
                 }
             }
-            return NSBool.NSTrue;
+            return SSBool.NSTrue;
         }
 
-        public static NSList RetrieveSList(this NSExpression[] expressions, NSScope scope, String operationName)
+        public static SSList RetrieveSList(this SSExpression[] expressions, SSScope scope, String operationName)
         {
-            NSList list = null;
-            (expressions.Length == 1 && (list = (expressions[0].Evaluate(scope) as NSList)) != null)
+            SSList list = null;
+            (expressions.Length == 1 && (list = (expressions[0].Evaluate(scope) as SSList)) != null)
                 .OrThrows("[" + operationName + "] must apply to a list");
 
             return list;
@@ -112,14 +111,14 @@ namespace NScheme
             return tokens;
         }
 
-        public static List<NSExpression> ParseExpSeq(this String code)
+        public static List<SSExpression> ParseExpSeq(this String code)
         {
             var file = new CodeFile();
             file.SourceCode = code;
             file.Parse();
             (file.ErrorList.Count < 1).OrThrows(file.ErrrorStr());
 
-            var program = new NSExpression(null, null);
+            var program = new SSExpression(null, null);
             var current = program;
 
             foreach (var lex in file.TokenList)
@@ -129,7 +128,7 @@ namespace NScheme
 
                 if (lex.Type == TokenType.LeftParentheses)
                 {
-                    var newNode = new NSExpression(tok: lex, parent: current);
+                    var newNode = new SSExpression(tok: lex, parent: current);
                     current.Children.Add(newNode);
                     //Console.WriteLine("current.Children.Add(newNode); (    child count " + current.Children.Count);
                     current = newNode;
@@ -141,13 +140,13 @@ namespace NScheme
                 else
                 {
                   //  Console.WriteLine("add " + lex.Value);
-                    current.Children.Add(new NSExpression(tok: lex, parent: current));
+                    current.Children.Add(new SSExpression(tok: lex, parent: current));
                 }
             }
             return program.Children;
         }
 
-        public static NSExpression ParseAsIScheme(this String code)
+        public static SSExpression ParseAsIScheme(this String code)
         {
             return ParseExpSeq(code)[0];
         }

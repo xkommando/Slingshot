@@ -4,21 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NScheme
+namespace Slingshot
 {
     namespace compiler
     {
-        public class NSExpression
+        public class SSExpression
         {
             public CodeToken Token { get; private set; }
-            public List<NSExpression> Children { get; private set; }
-            public NSExpression Parent { get; private set; }
+            public List<SSExpression> Children { get; private set; }
+            public SSExpression Parent { get; private set; }
 
-            public NSExpression(CodeToken tok, NSExpression parent)
+            public SSExpression(CodeToken tok, SSExpression parent)
             {
                 this.Token = tok;
                 this.Parent = parent;
-                this.Children = new List<NSExpression>(6);
+                this.Children = new List<SSExpression>(6);
             }
 
             public override String ToString()
@@ -33,9 +33,9 @@ namespace NScheme
                 }
             }
 
-            public NSObject Evaluate(NSScope scope)
+            public SSObject Evaluate(SSScope scope)
             {
-                NSExpression current = this;
+                SSExpression current = this;
                 while(true)
                 {
                     CodeToken tok = current.Token;
@@ -52,12 +52,12 @@ namespace NScheme
                             case TokenType.String:
                                 return tok.Value;
                             case TokenType.Char:
-                                return new NSChar(tok.Value[0]);
+                                return new SSChar(tok.Value[0]);
 
                             case TokenType.True:
-                                return NSBool.NSTrue;
+                                return SSBool.NSTrue;
                             case TokenType.False:
-                                return NSBool.NSFalse;
+                                return SSBool.NSFalse;
 
                             case TokenType.Identifier:
                                 return scope.Find(tok.Value);
@@ -71,54 +71,54 @@ namespace NScheme
                         {
                             case TokenType.Def:
                                 return scope.Define(current.Children[1].Token.Value, 
-                                                    current.Children[2].Evaluate(new NSScope(scope)));
+                                                    current.Children[2].Evaluate(new SSScope(scope)));
 
                             case TokenType.UnDef:
                                 return scope.Undefine(current.Children[1].Token.Value);
 
                             case TokenType.Func:
-                                NSExpression body = current.Children[2];
+                                SSExpression body = current.Children[2];
                                 var parameters = current.Children[1].Children.Select(exp => exp.Token).ToArray();
-                                NSScope newScope = new NSScope(scope);
-                                return new NSFunction(body, parameters, newScope);
+                                SSScope newScope = new SSScope(scope);
+                                return new SSFunction(body, parameters, newScope);
 
                             case TokenType.If:
-                                NSBool condition = (NSBool)(current.Children[1].Evaluate(scope));
+                                SSBool condition = (SSBool)(current.Children[1].Evaluate(scope));
                                 current = condition ? current.Children[2] : current.Children[3];
                                 continue;
 
                             case TokenType.Begin:
-                                NSObject ret = null;
-                                foreach (NSExpression statement in current.Children.Skip(1))
+                                SSObject ret = null;
+                                foreach (SSExpression statement in current.Children.Skip(1))
                                 {
                                     ret = statement.Evaluate(scope);
                                 }
                                 return ret;
 
                             case TokenType.List:
-                        			return new NSList(current.Children.Skip(1).Select(exp => exp.Evaluate(scope)));
+                        			return new SSList(current.Children.Skip(1).Select(exp => exp.Evaluate(scope)));
 
                             case TokenType.True:
-                                    return NSBool.NSTrue;
+                                    return SSBool.NSTrue;
                             case TokenType.False:
-                                    return NSBool.NSFalse;
+                                    return SSBool.NSFalse;
                         }
 
-                        Func<NSExpression[], NSScope, NSObject> func;
-                        NSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);
+                        Func<SSExpression[], SSScope, SSObject> func;
+                        SSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);
                         if (func != null)
                         {
                             var arguments = current.Children.Skip(1).ToArray();
                             return func(arguments, scope);
                         }
 
-                        NSFunction function = tok.Type == TokenType.LeftParentheses ?
-                                             (NSFunction)first.Evaluate(scope)
-                                             : (NSFunction)scope.Find(tok.Value);
+                        SSFunction function = tok.Type == TokenType.LeftParentheses ?
+                                             (SSFunction)first.Evaluate(scope)
+                                             : (SSFunction)scope.Find(tok.Value);
 
                         var args = current.Children.Skip(1).Select(s => s.Evaluate(scope)).ToArray();
-                        NSFunction newFunction = function.Update(args);
-                        if (newFunction.IsPartial)
+                        SSFunction newFunction = function.Update(args);
+                        if (newFunction.IsPartial())
                         {
                             return newFunction.Evaluate();
                         }

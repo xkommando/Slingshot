@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NScheme", "NScheme\NScheme.csproj", "{19B45A3B-2A6D-4970-AF9A-1A805DB2A770}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slingshot", "Slingshot\Slingshot.csproj", "{19B45A3B-2A6D-4970-AF9A-1A805DB2A770}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

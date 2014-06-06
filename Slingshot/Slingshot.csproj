@@ -7,11 +7,12 @@
     <ProjectGuid>{19B45A3B-2A6D-4970-AF9A-1A805DB2A770}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Interpretor</RootNamespace>
-    <AssemblyName>NScheme</AssemblyName>
+    <RootNamespace>Slingshot</RootNamespace>
+    <AssemblyName>Slingshot</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -37,6 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,9 +47,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>NScheme.Interpretor</StartupObject>
+    <StartupObject>Slingshot.SSInterpretor</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -63,16 +65,18 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="InterEx.cs" />
-    <Compile Include="Interpretor.cs" />
-    <Compile Include="objs\NSChar.cs" />
-    <Compile Include="objs\NSList.cs" />
-    <Compile Include="objs\NSNumeric.cs" />
-    <Compile Include="objs\NSString.cs" />
+    <Compile Include="SSInterpretor.cs" />
+    <Compile Include="objs\SSChar.cs" />
+    <Compile Include="objs\SSDict.cs" />
+    <Compile Include="objs\SSList.cs" />
+    <Compile Include="objs\SSNumeric.cs" />
+    <Compile Include="objs\SSBool.cs" />
+    <Compile Include="objs\SSString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NSExpression.cs" />
-    <Compile Include="objs\NSFunction.cs" />
-    <Compile Include="objs\NSObject.cs" />
-    <Compile Include="NSScope.cs" />
+    <Compile Include="SSExpression.cs" />
+    <Compile Include="objs\SSFunction.cs" />
+    <Compile Include="objs\SSObject.cs" />
+    <Compile Include="SSScope.cs" />
     <Compile Include="token\CodeFile.cs" />
     <Compile Include="token\CodeToken.cs" />
     <Compile Include="token\TokenType.cs" />

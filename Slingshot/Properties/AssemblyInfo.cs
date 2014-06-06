@@ -6,12 +6,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NScheme")]
-[assembly: AssemblyDescription("Interpretor for the Scheme-like Language NScheme")]
+[assembly: AssemblyTitle("[assembly: AssemblyTitleAttribute()]")]
+[assembly: AssemblyDescription("Interpretor for the Language Singshot")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("com.caibowen")]
+[assembly: AssemblyCompany("bowencai.com")]
 [assembly: AssemblyProduct("NScheme")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Cai Bowen")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

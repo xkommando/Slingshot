@@ -4,39 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NScheme
+namespace Slingshot
 {
     namespace compiler
     {
-        public class NSFunction : NSObject
+        public class SSFunction : SSObject
         {
-            public NSExpression Body { get; private set; }
+            public SSExpression Body { get; private set; }
             public CodeToken[] Parameters { get; private set; }
-            public NSScope Scope { get; private set; }
-            public Boolean IsPartial
+            public SSScope Scope { get; private set; }
+            public bool IsPartial()
             {
-                get
-                {
-                    return this.ComputeFilledParameters().Length.InBetween(1, this.Parameters.Length);
-                }
+                return this.ComputeFilledParameters().Length.InBetween(1, this.Parameters.Length);
             }
             /// <summary>
             /// functions are immutable
             /// </summary>
             /// <returns></returns>
-            public override NSObject Clone()
+            public override object Clone()
             {
                 return this;
             }
 
-            public NSFunction(NSExpression body, CodeToken[] parameters, NSScope scope)
+            public SSFunction(SSExpression body, CodeToken[] parameters, SSScope scope)
             {
                 this.Body = body;
                 this.Parameters = parameters;
                 this.Scope = scope;
             }
 
-            public NSObject Evaluate()
+            public SSObject Evaluate()
             {
                 CodeToken[] filledParameters = this.ComputeFilledParameters();
                 if (filledParameters.Length < Parameters.Length)
@@ -54,7 +51,7 @@ namespace NScheme
                 return String.Format("(func ({0}) {1})",
                     " ".Join(this.Parameters.Select(p =>
                     {
-                        NSObject value = null;
+                        SSObject value = null;
                         if ((value = this.Scope.FindInTop(p.Value)) != null)
                         {
                             return p + ":" + value;
@@ -68,23 +65,17 @@ namespace NScheme
                 return this.Parameters.Where(p => Scope.FindInTop(p.Value) != null).ToArray();
             }
 
-            public NSFunction Update(NSObject[] arguments)
+            public SSFunction Update(SSObject[] arguments)
             {
                 var existingArguments = 
                     this.Parameters.Select(p => this.Scope.FindInTop(p.Value))
                                     .Where(obj => obj != null);
 
                 var newArguments = existingArguments.Concat(arguments).ToArray();
-                NSScope newScope = this.Scope.Parent.SpawnScopeWith(this.Parameters, newArguments);
-                return new NSFunction(this.Body, this.Parameters, newScope);
+                SSScope newScope = this.Scope.Parent.SpawnScopeWith(this.Parameters, newArguments);
+                return new SSFunction(this.Body, this.Parameters, newScope);
             }
 
-            public override bool Eq(NSObject other)
-            {
-                return other is NSFunction ?
-                                this.Body == ((NSFunction)other).Body
-                                : false;
-            }
         }
     }
 }

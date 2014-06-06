@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NScheme.compiler;
+using Slingshot.compiler;
 
-namespace NScheme
+namespace Slingshot
 {
     public static partial class Extensions
     {

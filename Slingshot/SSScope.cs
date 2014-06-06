@@ -4,27 +4,27 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace NScheme
+namespace Slingshot
 {
     namespace compiler
     {
-        public class NSScope
+        public class SSScope
         {
             public TextWriter StdOut;
-            public NSScope Parent { get; private set; }
-            public Dictionary<string, NSObject> variableTable { get; private set; }
+            public SSScope Parent { get; private set; }
+            public Dictionary<string, SSObject> variableTable { get; private set; }
 
-            public NSScope(NSScope parent)
+            public SSScope(SSScope parent)
             {
                 this.Parent = parent;
-                this.variableTable = new Dictionary<string, NSObject>(32);
+                this.variableTable = new Dictionary<string, SSObject>(32);
                 this.StdOut = parent == null ? null : parent.StdOut;
                 this.StdOut = StdOut ?? Console.Out;
             }
 
-            public NSObject Find(String name)
+            public SSObject Find(String name)
             {
-                NSScope current = this;
+                SSScope current = this;
                 while (current != null)
                 {
                     if (current.variableTable.ContainsKey(name))
@@ -36,37 +36,37 @@ namespace NScheme
                 throw new Exception(name + " is undefined.");
             }
 
-            public NSObject Define(String name, NSObject value)
+            public SSObject Define(String name, SSObject value)
             {
                 this.variableTable.Add(name, value);
                 return value;
             }
 
-            public NSObject Undefine(String name)
+            public SSObject Undefine(String name)
             {
                 return variableTable.Remove(name);
             }
 
-            public static Dictionary<String, Func<NSExpression[], NSScope, NSObject>> builtinFunctions =
-                new Dictionary<String, Func<NSExpression[], NSScope, NSObject>>(64);
+            public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> builtinFunctions =
+                new Dictionary<String, Func<SSExpression[], SSScope, SSObject>>(64);
 
-            public static Dictionary<String, Func<NSExpression[], NSScope, NSObject>> BuiltinFunctions
+            public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> BuiltinFunctions
             {
                 get { return builtinFunctions; }
             }
 
             // Dirty HACK for fluent API.
-            public NSScope BuildIn(String name, Func<NSExpression[], NSScope, NSObject> builtinFuntion)
+            public SSScope BuildIn(String name, Func<SSExpression[], SSScope, SSObject> builtinFuntion)
             {
                 //Console.WriteLine("add [{0}]".Fmt(name));
-                NSScope.builtinFunctions.Add(name, builtinFuntion);
+                SSScope.builtinFunctions.Add(name, builtinFuntion);
                 return this;
             }
 
-            public NSScope SpawnScopeWith(CodeToken[] toks, NSObject[] values)
+            public SSScope SpawnScopeWith(CodeToken[] toks, SSObject[] values)
             {
                 (toks.Length >= values.Length).OrThrows("Too many arguments.");
-                var scope = new NSScope(this);
+                var scope = new SSScope(this);
                 for (var i = 0; i < values.Length; i++)
                 {
                     scope.variableTable.Add(toks[i].Value, values[i]);
@@ -74,7 +74,7 @@ namespace NScheme
                 return scope;
             }
 
-            public NSObject FindInTop(String name)
+            public SSObject FindInTop(String name)
             {
                 return variableTable.ContainsKey(name) ? variableTable[name] : null;
             }

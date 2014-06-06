@@ -1,5 +1,5 @@
 ﻿
-namespace NScheme
+namespace Slingshot
 {
     namespace compiler
     {
