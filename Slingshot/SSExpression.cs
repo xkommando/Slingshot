@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Slingshot.Objects;
-using Slingshot.Buildin;
+using Slingshot.BuildIn;
 
 namespace Slingshot
 {
@@ -112,28 +112,37 @@ namespace Slingshot
                             var arguments = current.Children.Skip(1).ToArray();
                             return func(arguments, scope);
                         }
-
-                        SSFunction function = tok.Type == TokenType.LeftParentheses ?
-                                             (SSFunction)first.Evaluate(scope)
-                                             : (SSFunction)scope.Find(tok.Value);
-
-                        var args = current.Children.Skip(1).Select(s => s.Evaluate(scope)).ToArray();
-                        SSFunction newFunction = function.Update(args);
-                        if (newFunction.IsPartial())
+                        try
                         {
-                            return newFunction.Evaluate();
+                            SSFunction function = tok.Type == TokenType.LeftParentheses ?
+                                                (SSFunction)first.Evaluate(scope)
+                                                : (SSFunction)scope.Find(tok.Value);
+
+                            var args = current.Children.Skip(1).Select(s => s.Evaluate(scope)).ToArray();
+                            SSFunction newFunction = function.Update(args);
+                            if (newFunction.IsPartial())
+                            {
+                                return newFunction.Evaluate();
+                            }
+                            else
+                            {
+                                current = newFunction.Body;
+                                scope = newFunction.Scope;
+                            }
                         }
-                        else
+                        catch(Exception e)
                         {
-                            current = newFunction.Body;
-                            scope = newFunction.Scope;
+                            scope.Output.WriteLine( " ===== " + current.Children[0].Token.Value);
+                            scope.Output.WriteLine(e);
+                            //scope.Output.WriteLine(e.StackTrace);
                         }
+
 
                     }
                 }
             }
 
-            // Displays the lexes in a readable form.
+
             public static String PrettyPrint(String[] lexes)
             {
                 return "[" + (", ".Join(lexes.Select(s => "'" + s + "'"))) + "]";

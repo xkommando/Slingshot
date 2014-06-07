@@ -15,7 +15,7 @@ namespace Slingshot
 
         public static SSScope LoadLib(this SSScope scope, string lib)
         {
-            scope.StdOut.WriteLine(">>> Loading Library [{0}] ...".Fmt(lib));
+            scope.Output.WriteLine(">>> Loading Library [{0}] ...".Fmt(lib));
             using (var sr = new StreamReader(lib))
             {
                 string code;
@@ -29,11 +29,11 @@ namespace Slingshot
                     }//
                     catch (Exception ex)
                     {
-                        scope.StdOut.WriteLine("Failed to Load library[{0}]".Fmt(lib));
-                        scope.StdOut.WriteLine(ex);
-                        ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.StdOut.WriteLine(a));
+                        scope.Output.WriteLine("Failed to Load library[{0}]".Fmt(lib));
+                        scope.Output.WriteLine(ex);
+                        ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
                     }
-                    scope.variableTable.ForEach(a => scope.StdOut.WriteLine(">>> Added {0} : {1} "
+                    scope.variableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
                         .Fmt(a.Key, a.Value.GetType())));
                 }
             }
@@ -60,7 +60,7 @@ namespace Slingshot
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(">>> " + ex);
-                    ex.StackTrace.Split("at".ToCharArray()).Take(3).ForEach(a => scope.StdOut.WriteLine(a));
+                    ex.StackTrace.Split("at".ToCharArray()).Take(3).ForEach(a => scope.Output.WriteLine(a));
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace Slingshot
             var current = (ISSNumber)expressions[0].Evaluate(scope);
             foreach (var obj in expressions.Skip(1))
             {
-                var next = (SSInteger)obj.Evaluate(scope);
+                var next = (ISSNumber)obj.Evaluate(scope);
                 if (relation(current, next))
                 {
                     current = next;

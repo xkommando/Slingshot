@@ -22,7 +22,7 @@ namespace Slingshot
 
             public override string ToString()
             {
-                return "SSString[" + Val + "]";
+                return "\"" + Val + "\"";
             }
 
             public override bool Equals(object other)

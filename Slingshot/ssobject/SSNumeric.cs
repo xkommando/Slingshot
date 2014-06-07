@@ -30,7 +30,7 @@ namespace Slingshot
 
             public override String ToString()
             {
-                return "SSInteger[" + Val.ToString() + "]";
+                return Val.ToString();
             }
 
             public override bool Equals(object other)
@@ -93,7 +93,7 @@ namespace Slingshot
 
             public override String ToString()
             {
-                return "SSFloat[" +  Val.ToString() + "]";
+                return Val.ToString();
             }
             public override bool Equals(object other)
             {

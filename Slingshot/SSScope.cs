@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Slingshot.Objects;
-using Slingshot.Buildin;
+using Slingshot.BuildIn;
 
 namespace Slingshot
 {
@@ -12,7 +12,8 @@ namespace Slingshot
     {
         public class SSScope
         {
-            public TextWriter StdOut;
+            public TextWriter Output;
+            public Random Rand;
             public SSScope Parent { get; private set; }
             public Dictionary<string, SSObject> variableTable { get; private set; }
 
@@ -20,12 +21,17 @@ namespace Slingshot
             {
                 this.Parent = parent;
                 this.variableTable = new Dictionary<string, SSObject>(32);
-                this.StdOut = parent == null ? null : parent.StdOut;
-                this.StdOut = StdOut ?? Console.Out;
+                this.Output = parent == null ? null : parent.Output;
+                this.Output = Output ?? Console.Out;
+                this.Rand = new Random();
             }
 
             public SSObject Find(String name)
             {
+                //Func<SSExpression[], SSScope, SSObject> func;
+                //builtinFunctions.TryGetValue(name, out func);
+                //if (func != null)
+                //    return func;
                 SSScope current = this;
                 while (current != null)
                 {

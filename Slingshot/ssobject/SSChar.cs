@@ -18,7 +18,7 @@ namespace Slingshot
             }
             public override String ToString()
             {
-                return "SSChar[" + Val + "]";
+                return "'" + Val + "'";
             }
 
             public override bool Equals(object other)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Slingshot.Compiler;
 using Slingshot.Objects;
-using Slingshot.Buildin;
+using Slingshot.BuildIn;
 
 namespace Slingshot
 {
@@ -12,8 +12,12 @@ namespace Slingshot
     {
         public static void Main(string[] args)
         {
+            int a = 1;
+            int b = 2;
+            int c = b << a;
+
             GLOBAL_SCOPE
-               .LoadLib("stdfunc.ns")
+               .LoadLib("stdfunc.ss")
                .InterpretingInConsole((code, scope) => code.ParseAsIScheme().Evaluate(scope));
         }
 
@@ -26,36 +30,52 @@ namespace Slingshot
                .BuildIn("%", Functions.Numbers.Mod)
                .BuildIn("abs", Functions.Numbers.Abs)
                .BuildIn("set!", Functions.Numbers.Set)
+               .BuildIn("rand", Functions.Numbers.Rand)
 
-               .BuildIn("==", Functions.Numbers.Eq)
-            //.BuildIn(">", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1 > s2))
+               .BuildIn("eq?", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.Equals(s2)))
+               .BuildIn("==", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.Equals(s2)))
                .BuildIn(">", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() > s2.FloatVal()))
-               .BuildIn("<", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() < s2.FloatVal()))
-               .BuildIn(">=", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() >= s2.FloatVal()))
-               .BuildIn("<=", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() <= s2.FloatVal()))
+               .BuildIn("<", (nsargs, scope) =>
+                   (((ISSNumber)nsargs[0].Evaluate(scope)).FloatVal()
+                        < ((ISSNumber)nsargs[1].Evaluate(scope)).FloatVal()))
 
-               .BuildIn("&&", Functions.Booleans.And)
-               .BuildIn("||", Functions.Booleans.Or)
-               .BuildIn("!", Functions.Booleans.Not)
-               .BuildIn("^", Functions.Booleans.Xor)
-               .BuildIn("~", Functions.Booleans.Xnor)
-               .BuildIn("and", Functions.Booleans.And)
-               .BuildIn("or", Functions.Booleans.Or)
-               .BuildIn("not", Functions.Booleans.Not)
-               .BuildIn("xor", Functions.Booleans.Xor)
-               .BuildIn("xnor", Functions.Booleans.Xnor)
+               .BuildIn(">=", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() >= s2.FloatVal()))
+               .BuildIn("<=", (nsargs, scope) => nsargs.ChainRelation(scope,
+                                                (s1, s2) => s1.FloatVal() <= s2.FloatVal()))
+
+               .BuildIn("&", (nsargs, scope) => nsargs.BitOps(scope, (a, b) => a & b))
+               .BuildIn("|", (nsargs, scope) => nsargs.BitOps(scope, (a, b) => a | b))
+               .BuildIn("^", (nsargs, scope) => nsargs.BitOps(scope, (a, b) => a ^ b))
+               .BuildIn("~", (nsargs, scope) => nsargs.BitOp(scope, a => ~a))
+               .BuildIn("<<", (nsargs, scope) => nsargs.BitOps(scope, (a, b) => ((int)a << (int)b)))
+               .BuildIn(">>", (nsargs, scope) => nsargs.BitOps(scope, (a, b) => ((int)a >> (int)b)))
+
+               .BuildIn("and", (nsargs, scope) => nsargs.ChainRelation(scope,
+                                                        (s1, s2) => s1.IntVal() == 1 && s2.IntVal() == 1))
+               .BuildIn("or", (nsargs, scope) => nsargs.ChainRelation(scope,
+                                                        (s1, s2) => s1.IntVal() == 1 || s2.IntVal() == 1))
+               .BuildIn("not", (nsargs, scope) => nsargs.Op(scope, (a) => !a))
+               .BuildIn("xor", (nsargs, scope) => nsargs.Ops(scope,
+                                                        (a, b) => (!a && b) || (!b && a)))
+
+               .BuildIn("xnor", (nsargs, scope) => nsargs.Ops(scope,
+                                                        (a, b) => (!a && !b) || (b && a)))
 
                .BuildIn("car", (nsargs, scope) => nsargs.RetrieveSList(scope, "car").First())
                .BuildIn("cdr", (nsargs, scope) => new SSList(nsargs.RetrieveSList(scope, "cdr").Skip(1)))
                .BuildIn("cons", Functions.Lists.Cons)
                .BuildIn("list?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSList)
+               .BuildIn("char?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSChar)
                .BuildIn("string?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSString)
                .BuildIn("integer?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSInteger)
                .BuildIn("float?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSFloat)
+               .BuildIn("dict?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSDict)
 
-               .BuildIn("clone", (nsargs, scope) => 
+               .BuildIn("clone", (nsargs, scope) =>
                    (scope.Define(nsargs[0].Token.Value, (SSObject)nsargs[1].Evaluate(scope).Clone())))
-                .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
+               .BuildIn("log", Functions.IO.Log)
+               .BuildIn("error", (nsargs, scope) => { var ret = nsargs.Evaluate(scope); ret.ForEach(a => scope.Output.WriteLine(a)); throw new SystemException(ret.Last().ToString()); })
+               .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
             /// <summary>
             /// append atom + list || list + atom || list + list
             /// </summary>

@@ -16,6 +16,10 @@ namespace Slingshot
             {
                 this.Val = values.ToList();
             }
+            public SSList(List<SSObject> values)
+            {
+                this.Val = values;
+            }
             public SSObject this[int i]
             {
                 get
@@ -48,7 +52,7 @@ namespace Slingshot
 
             public override String ToString()
             {
-                return "SSlist[" + " ".Join(this.Val) + "]";
+                return "(list " + " ".Join(this.Val) + ")";
             }
 
             public override bool Equals(object obj)
