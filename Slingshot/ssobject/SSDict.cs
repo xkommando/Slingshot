@@ -10,17 +10,18 @@ namespace Slingshot
     {
         public class SSDict : SSObject
         {
-
             public Dictionary<SSObject, SSObject> Val { get; private set; }
             public SSDict(Dictionary<SSObject, SSObject> d)
             {
                 this.Val = d;
             }
 
-            public override bool Equals(object obj)
+            public override bool Eq(SSObject obj)
             {
-                return obj is SSDict ? Val.Equals(((SSDict)obj).Val) : false;
+                var dict = obj as SSDict;
+                return dict != null && Val.Equals(dict.Val);
             }
+
             public override int GetHashCode()
             {
                 return Val.GetHashCode();

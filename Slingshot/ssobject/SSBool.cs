@@ -7,7 +7,7 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public class SSBool : SSObject, ISSNumber
+        public class SSBool : SSNumber
         {
             public static readonly SSBool NSFalse = new SSBool();
             public static readonly SSBool NSTrue = new SSBool();
@@ -27,17 +27,17 @@ namespace Slingshot
                 return this ? 1 : 0;
             }
 
-            public override bool Equals(object obj)
+            public override bool Eq(SSObject obj)
             {
                 return this == obj;
             }
 
-            public long IntVal()
+            public override long IntVal()
             {
                 return this ? 1 : 0;
             }
 
-            public double FloatVal()
+            public override double FloatVal()
             {
                 return this ? 1.0 : 0.0;
             }

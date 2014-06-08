@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Slingshot.Compiler;
 using Slingshot.Objects;
+using Slingshot.Interpretor;
 
 namespace Slingshot
 {
@@ -29,10 +30,10 @@ namespace Slingshot
                         oput.WriteLine("\t" + exp.Token.Value);
                         exp.Children.ForEach(a => oput.Write(a.Token.Value + "   "));
                     }
-                    oput.WriteLine("---------------");
+                    oput.WriteLine();
                     ret.ForEach(a => oput.Write("   " + a.ToString()));
                     oput.WriteLine();
-                    return "";
+                    return "---------------";
                 }
 
                 public static SSObject OutStream(SSExpression[] exps, SSScope scope)

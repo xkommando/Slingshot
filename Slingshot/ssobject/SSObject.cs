@@ -36,6 +36,7 @@ namespace Slingshot
                 return (SSChar)value;
             }
 
+            public abstract bool Eq(SSObject obj);
 
             public abstract object Clone();
         }

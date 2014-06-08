@@ -22,7 +22,9 @@ namespace Slingshot
             Colon,				// :
             SemiColon,          // ;
             Comma,				// ,
-
+            QMark,              // ?
+            Tide,               // ~
+            Caret,              // ^
 
 
             Add,				// +
@@ -77,7 +79,7 @@ namespace Slingshot
             UnDef,                // undef
             Func,               // func
             If,
-            Begin,              // begin
+            //Begin,              // begin
             List,               // list
             //Else,
             //While,

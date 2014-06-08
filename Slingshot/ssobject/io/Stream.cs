@@ -7,22 +7,22 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public class SSOutStream : SSObject
-        {
+        //public class SSOutStream : SSObject
+        //{
 
-            public override object Clone()
-            {
-                throw new NotImplementedException();
-            }
-        }
-        public class SSInStream : SSObject
-        {
+        //    public override object Clone()
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
+        //public class SSInStream : SSObject
+        //{
 
-            public override object Clone()
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    public override object Clone()
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }
 

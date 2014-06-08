@@ -8,7 +8,7 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public class SSChar: SSObject, ISSNumber
+        public class SSChar: SSNumber
         {
             public char Val { get; private set; }
 
@@ -21,9 +21,10 @@ namespace Slingshot
                 return "'" + Val + "'";
             }
 
-            public override bool Equals(object other)
+            public override bool Eq(SSObject other)
             {
-                return other is SSChar ? Val == ((SSChar)other).Val : false;
+                var c = other as SSChar;
+                return c != null && Val == c.Val;
             }
 
             public override int GetHashCode()
@@ -52,12 +53,12 @@ namespace Slingshot
                 return new SSChar(Val);
             }
 
-            public long IntVal()
+            public override long IntVal()
             {
                 return Val;
             }
 
-            public double FloatVal()
+            public override double FloatVal()
             {
                 return Val;
             }

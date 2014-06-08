@@ -24,22 +24,32 @@ namespace Slingshot
 
             public override String ToString()
             {
-                if (this.Token.Type == TokenType.LeftParentheses)
-                {
+                if (Token.Type == TokenType.LeftCurlyBracket)
+                    return "{" + " ".Join(Children) + "}";
+                else if (Token.Type == TokenType.LeftParentheses)
                     return "(" + " ".Join(Children) + ")";
-                }
                 else
-                {
-                    return this.Token.Value;
-                }
+                    return Token.Value;
             }
 
             public SSObject Evaluate(SSScope scope)
             {
-                SSExpression current = this;
+                var current = this;
                 while(true)
                 {
-                    CodeToken tok = current.Token;
+                    var tok = current.Token;
+
+                    //Console.WriteLine("=====>>>>" + tok.Value + "  " 
+                    //+ current.Children.Count);//+ "    " + current.Children[0].Token.Value);
+                    switch (current.Token.Type)
+                    {
+                        case TokenType.LeftCurlyBracket:
+                            SSObject ret = null;
+                            current.Children.ForEach(a => ret = a.Evaluate(scope));
+                            return ret;
+                        case TokenType.LeftBracket:
+                            return new SSList(current.Children.Select(a => a.Evaluate(scope)));
+                    }
                     if (current.Children.Count == 0)
                         switch (tok.Type)
                         {
@@ -67,7 +77,8 @@ namespace Slingshot
                     {
                         var first = current.Children[0];
                         tok = first.Token;
-                        /// @see Code Token KEY_WORDS
+
+                        // @see Code Token KEY_WORDS
                         switch(tok.Type)
                         {
                             case TokenType.Def:
@@ -78,33 +89,23 @@ namespace Slingshot
                                 return scope.Undefine(current.Children[1].Token.Value);
 
                             case TokenType.Func:
-                                SSExpression body = current.Children[2];
                                 var parameters = current.Children[1].Children.Select(exp => exp.Token).ToArray();
-                                SSScope newScope = new SSScope(scope);
+                                var body = current.Children[2];
+                                var newScope = new SSScope(scope);
                                 return new SSFunction(body, parameters, newScope);
 
+                            //case TokenType.QMark:
                             case TokenType.If:
-                                SSBool condition = (SSBool)(current.Children[1].Evaluate(scope));
+                                var condition = (SSBool)(current.Children[1].Evaluate(scope));
                                 current = condition ? current.Children[2] : current.Children[3];
                                 continue;
-
-                            case TokenType.Begin:
-                                SSObject ret = null;
-                                foreach (SSExpression statement in current.Children.Skip(1))
-                                {
-                                    ret = statement.Evaluate(scope);
-                                }
-                                return ret;
-
-                            case TokenType.List:
-                        			return new SSList(current.Children.Skip(1).Select(exp => exp.Evaluate(scope)));
 
                             case TokenType.True:
                                     return SSBool.NSTrue;
                             case TokenType.False:
                                     return SSBool.NSFalse;
                         }
-
+      
                         Func<SSExpression[], SSScope, SSObject> func;
                         SSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);
                         if (func != null)
@@ -124,17 +125,15 @@ namespace Slingshot
                             {
                                 return newFunction.Evaluate();
                             }
-                            else
-                            {
-                                current = newFunction.Body;
-                                scope = newFunction.Scope;
-                            }
+                            current = newFunction.Body;
+                            scope = newFunction.Scope;
                         }
                         catch(Exception e)
                         {
-                            scope.Output.WriteLine( " ===== " + current.Children[0].Token.Value);
+                          //  scope.Output.WriteLine( " ===== " + current.Children[0].Token.Value);
+                            current.Children.ForEach(a => Console.WriteLine(a.Token.Value + "   "));
                             scope.Output.WriteLine(e);
-                            //scope.Output.WriteLine(e.StackTrace);
+                            return SSBool.NSFalse;
                         }
 
 
@@ -143,10 +142,10 @@ namespace Slingshot
             }
 
 
-            public static String PrettyPrint(String[] lexes)
-            {
-                return "[" + (", ".Join(lexes.Select(s => "'" + s + "'"))) + "]";
-            }
+            //public static String PrettyPrint(String[] lexes)
+            //{
+            //    return "[" + (", ".Join(lexes.Select(s => "'" + s + "'"))) + "]";
+            //}
 
         }
     }

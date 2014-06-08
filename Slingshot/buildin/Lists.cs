@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Slingshot.Objects;
 using Slingshot.Compiler;
+using Slingshot.Interpretor;
 
 namespace Slingshot
 {
@@ -136,7 +137,7 @@ namespace Slingshot
                     return newval;
                 }
 
-                public static SSObject GetAt(SSExpression[] exps, SSScope scope)
+                public static SSObject ElemAt(SSExpression[] exps, SSScope scope)
                 {
                     SSList list = null;
                     SSInteger idx = null;

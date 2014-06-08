@@ -43,8 +43,12 @@ namespace Slingshot
                 {"undef" , new CodeToken(TokenType.UnDef, "undef")},
 
                 {"func" , new CodeToken(TokenType.Func, "func")},
+
                 {"if" , new CodeToken(TokenType.If, "if")},
-                {"begin" , new CodeToken(TokenType.Begin, "begin")},
+                {"?" , new CodeToken(TokenType.QMark, "?")},
+                
+              //  {"begin" , new CodeToken(TokenType.Begin, "begin")},
+                {":" , new CodeToken(TokenType.Colon, ":")},
                 
                 {"list" , new CodeToken(TokenType.List, "list")},
                 {"True" , new CodeToken(TokenType.True, "True")},
@@ -75,7 +79,7 @@ namespace Slingshot
         //}
 
 
-        sealed class CodeError : CodeToken
+        public class CodeError : CodeToken
         {
             public String Message;
 
@@ -91,7 +95,7 @@ namespace Slingshot
         }
 
 
-        class CodeLine: List<CodeToken>
+        public class CodeLine: List<CodeToken>
         {
             private readonly int lineNumber_;
             public int LineNum { get { return lineNumber_; } }

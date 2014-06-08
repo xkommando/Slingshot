@@ -8,13 +8,13 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public interface ISSNumber
+        public abstract class SSNumber : SSObject
         {
-            Int64 IntVal();
-            double FloatVal();
+            public abstract Int64 IntVal();
+            public abstract double FloatVal();
         }
 
-        public class SSInteger : SSObject, ISSNumber
+        public class SSInteger : SSNumber
         {
             public Int64 Val { get; private set; }
 
@@ -33,11 +33,9 @@ namespace Slingshot
                 return Val.ToString();
             }
 
-            public override bool Equals(object other)
+            public override bool Eq(SSObject other)
             {
-                return other is SSInteger ?
-                                this.Val == ((SSInteger)other).Val
-                                : false;
+                return other is SSInteger && this.Val == ((SSInteger)other).Val;
             }
 
             public override int GetHashCode()
@@ -68,18 +66,18 @@ namespace Slingshot
                 return new SSInteger((Int64)value);
             }
 
-            public long IntVal()
+            public override long IntVal()
             {
                 return Val;
             }
 
-            public double FloatVal()
+            public override double FloatVal()
             {
                 return Val;
             }
         }
 
-        public class SSFloat : SSObject, ISSNumber
+        public class SSFloat : SSNumber
         {
             public double Val { get; private set; }
             public SSFloat(double db)
@@ -95,11 +93,9 @@ namespace Slingshot
             {
                 return Val.ToString();
             }
-            public override bool Equals(object other)
+            public override bool Eq(SSObject other)
             {
-                return other is SSFloat ?
-                                this.Val == ((SSFloat)other).Val
-                                : false;
+                return other is SSFloat && Math.Abs(this.Val - ((SSFloat)other).Val) < 0.0000001;
             }
             public override int GetHashCode()
             {
@@ -128,12 +124,12 @@ namespace Slingshot
                 return new SSFloat(value.Val);
             }
 
-            public long IntVal()
+            public override long IntVal()
             {
                 return (long)Val;
             }
 
-            public double FloatVal()
+            public override double FloatVal()
             {
                 return Val;
             }

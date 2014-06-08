@@ -112,17 +112,19 @@ namespace Slingshot
         /// <param name="source"></param>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool In<T>(this T source, params T[] list)
-        {
-            if (null == source) throw new ArgumentNullException("source");
-            return list.Contains(source);
-        }
+        //public static bool In<T>(this T source, params T[] list)
+        //{
+        //    if (null == source) throw new ArgumentNullException("source");
+        //    return list.Contains(source);
+        //}
 
-        public static bool Contains<T>(this IEnumerable<T> source, params T[] list)
-        {
-            if (null == source) throw new ArgumentNullException("source");
-            return list.Any(a => source.Contains(a));
-        }
+        //public static bool Contains<T>(this IEnumerable<T> source, params T[] list)
+        //{
+        //    if (null == source) throw new ArgumentNullException("source");
+        //    return list.Any(a => source.Contains(a));
+        //}
+
+
         /// <summary>
         /// list.AddRange(1, 2, 3);
         /// </summary>
@@ -153,15 +155,15 @@ namespace Slingshot
         #region general
 
 
-        public static T To<T>(this object input) where T : IConvertible
-        {
-            var type = typeof(T).Name;
+        //public static T To<T>(this object input) where T : IConvertible
+        //{
+        //    var type = typeof(T).Name;
 
-            TypeCode typecode;
-            if (!Enum.TryParse(type, out typecode)) throw new ArgumentException("Could not convert!");
+        //    TypeCode typecode;
+        //    if (!Enum.TryParse(type, out typecode)) throw new ArgumentException("Could not convert!");
 
-            return (T)Convert.ChangeType(input, typecode);
-        }
+        //    return (T)Convert.ChangeType(input, typecode);
+        //}
 
         #endregion
 
@@ -180,79 +182,79 @@ namespace Slingshot
     }
 
 
-    public class BidEnumerator<T> : IBidEnumerator<T>
-    {
-        private IEnumerator<T> enumerator_;
-        private List<T> buffer_;
-        private int index_;
+    //public class BidEnumerator<T> : IBidEnumerator<T>
+    //{
+    //    private IEnumerator<T> enumerator_;
+    //    private List<T> buffer_;
+    //    private int index_;
 
-        public BidEnumerator(IEnumerator<T> enumerator)
-        {
-            if (enumerator == null)
-                throw new ArgumentNullException("enumerator");
+    //    public BidEnumerator(IEnumerator<T> enumerator)
+    //    {
+    //        if (enumerator == null)
+    //            throw new ArgumentNullException("enumerator");
 
-            enumerator_ = enumerator;
-            buffer_ = new List<T>();
-            index_ = -1;
-        }
+    //        enumerator_ = enumerator;
+    //        buffer_ = new List<T>();
+    //        index_ = -1;
+    //    }
 
-        public bool MovePrevious()
-        {
-            if (index_ <= 0)
-            {
-                return false;
-            }
+    //    public bool MovePrevious()
+    //    {
+    //        if (index_ <= 0)
+    //        {
+    //            return false;
+    //        }
 
-            --index_;
-            return true;
-        }
+    //        --index_;
+    //        return true;
+    //    }
 
-        public bool MoveNext()
-        {
-            if (index_ < buffer_.Count - 1)
-            {
-                ++index_;
-                return true;
-            }
+    //    public bool MoveNext()
+    //    {
+    //        if (index_ < buffer_.Count - 1)
+    //        {
+    //            ++index_;
+    //            return true;
+    //        }
 
-            if (enumerator_.MoveNext())
-            {
-                buffer_.Add(enumerator_.Current);
-                ++index_;
-                return true;
-            }
+    //        if (enumerator_.MoveNext())
+    //        {
+    //            buffer_.Add(enumerator_.Current);
+    //            ++index_;
+    //            return true;
+    //        }
 
-            return false;
-        }
+    //        return false;
+    //    }
 
-        public T Current
-        {
-            get
-            {
-                if (index_ < 0 || index_ >= buffer_.Count)
-                    throw new InvalidOperationException();
+    //    public T Current
+    //    {
+    //        get
+    //        {
+    //            if (index_ < 0 || index_ >= buffer_.Count)
+    //                throw new InvalidOperationException();
 
-                return buffer_[index_];
-            }
-        }
+    //            return buffer_[index_];
+    //        }
+    //    }
 
-        public void Reset()
-        {
-            enumerator_.Reset();
-            buffer_.Clear();
-            index_ = -1;
-        }
+    //    public void Reset()
+    //    {
+    //        enumerator_.Reset();
+    //        buffer_.Clear();
+    //        index_ = -1;
+    //    }
 
-        public void Dispose()
-        {
-            enumerator_.Dispose();
-        }
+    //    public void Dispose()
+    //    {
+    //        enumerator_.Dispose();
+    //    }
 
-        object System.Collections.IEnumerator.Current
-        {
-            get { return Current; }
-        }
-    }
+    //    object System.Collections.IEnumerator.Current
+    //    {
+    //        get { return Current; }
+    //    }
+    //}
 
     //public class LinearIterater<T> : IEnumerator<T>
     //{

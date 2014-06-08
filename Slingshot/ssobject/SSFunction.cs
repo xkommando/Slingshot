@@ -76,6 +76,16 @@ namespace Slingshot
                 return new SSFunction(this.Body, this.Parameters, newScope);
             }
 
+
+            public override bool Eq(SSObject obj)
+            {
+                return obj is SSFunction && Body.Equals(((SSFunction) obj).Body);
+            }
+
+            public override int GetHashCode()
+            {
+                return Body.GetHashCode() * 31 + Parameters.GetHashCode();
+            }
         }
     }
 }

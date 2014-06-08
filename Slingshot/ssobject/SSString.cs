@@ -25,11 +25,9 @@ namespace Slingshot
                 return "\"" + Val + "\"";
             }
 
-            public override bool Equals(object other)
+            public override bool Eq(SSObject other)
             {
-                return other is SSString ?
-                                this.Val.Equals(((SSString)other).Val)
-                                : false;
+                return other is SSString && this.Val.Equals(((SSString)other).Val);
             }
             public override int GetHashCode()
             {

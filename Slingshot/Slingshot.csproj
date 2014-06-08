@@ -50,7 +50,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Slingshot.SSInterpretor</StartupObject>
+    <StartupObject>Slingshot.Interpretor.SSInterpretor</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -65,8 +65,9 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="buildin\Numbers.cs" />
     <Compile Include="buildin\Lists.cs" />
-    <Compile Include="InterEx.cs" />
+    <Compile Include="InterpretorAux.cs" />
     <Compile Include="buildin\IOs.cs" />
+    <Compile Include="Iterator.cs" />
     <Compile Include="SSInterpretor.cs" />
     <Compile Include="ssobject\io\SSFile.cs" />
     <Compile Include="ssobject\io\Stream.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="lex\CodeFile.cs" />
     <Compile Include="lex\CodeToken.cs" />
     <Compile Include="lex\TokenType.cs" />
+    <Compile Include="syntax\SyxtaxAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

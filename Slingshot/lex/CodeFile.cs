@@ -30,7 +30,7 @@ namespace Slingshot
         /// i.e., analyzer that parse multi source file concurrently, 
         /// each source file is parsed in seperate LexAnalyzer obj and do not affect others
         /// </summary>
-        class CodeFile : IEnumerable<CodeToken>, IBidEnumerable<CodeToken>
+        public class CodeFile : IEnumerable<CodeToken>, IIterable<CodeToken>
         {
 
             public List<CodeLine> TokenMatrix { get; private set; }
@@ -113,7 +113,7 @@ namespace Slingshot
             }
 
             // add single char, remember to set state if successed
-            private bool addSingle(char ch)
+            private bool tryAddSingle(char ch)
             {
                 switch (ch)
                 {
@@ -123,6 +123,8 @@ namespace Slingshot
                     case ']': addToken(1, TokenType.RightBracket); return true;
                     case '{': addToken(1, TokenType.LeftCurlyBracket); return true;
                     case '}': addToken(1, TokenType.RightCurlyBracket); return true;
+                    case '~': addToken(1, TokenType.Tide); return true;
+                    case '^': addToken(1, TokenType.Caret); return true;
                     // + ++
                     // - --
                     // * **
@@ -134,6 +136,7 @@ namespace Slingshot
                     case ',': addToken(1, TokenType.Comma); return true;
                     case ':': addToken(1, TokenType.Colon); return true;
                     case ';': addToken(1, TokenType.SemiColon); return true;
+                    case '?': addToken(1, TokenType.QMark); return true;
                 }
                 return false;
             }
@@ -143,7 +146,7 @@ namespace Slingshot
             {
                 if (ch.IsSkipChar())
                     return;
-                if (addSingle(ch))
+                if (tryAddSingle(ch))
                     return;
                 switch (ch)
                 {
@@ -485,7 +488,7 @@ namespace Slingshot
                                 currentIdx_--;
                                 addToken(TokenType.Integer);
                                 currentIdx_++;
-                                if (addSingle(ch))
+                                if (tryAddSingle(ch))
                                     resetState();
                                 else
                                     addError("Illegal Ending Char[" + ch + "] Following Integer");
@@ -518,7 +521,7 @@ namespace Slingshot
                                 currentIdx_--;
                                 addToken(TokenType.Float);
                                 currentIdx_++;
-                                if (addSingle(ch))
+                                if (tryAddSingle(ch))
                                     resetState();
                                 else
                                     addError("Illegal Ending Char[" + ch + "] Following Integer");
@@ -678,11 +681,15 @@ namespace Slingshot
                 return TokenList.GetEnumerator();
             }
 
-            public IBidEnumerator<CodeToken> GetBidEnumerator()
-            {
-                return new BidEnumerator<CodeToken>(TokenList.GetEnumerator());
-            }
+            //public IBidEnumerator<CodeToken> GetBidEnumerator()
+            //{
+            //    return new BidEnumerator<CodeToken>(TokenList.GetEnumerator());
+            //}
 
+            public Iterator<CodeToken> GetIterator()
+            {
+                return new Iterator<CodeToken>(TokenList);
+            }
         } // class
 
     } // namespace lexcial 

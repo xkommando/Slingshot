@@ -55,11 +55,9 @@ namespace Slingshot
                 return "(list " + " ".Join(this.Val) + ")";
             }
 
-            public override bool Equals(object obj)
+            public override bool Eq(SSObject obj)
             {
-                return obj is SSList ?
-                                Val.Equals(((SSList)obj).Val)
-                                : false;
+                return obj is SSList && Val.SequenceEqual(((SSList)obj).Val);
             }
 
             public override int GetHashCode()

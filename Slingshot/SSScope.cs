@@ -12,15 +12,15 @@ namespace Slingshot
     {
         public class SSScope
         {
-            public TextWriter Output;
-            public Random Rand;
+            public readonly TextWriter Output;
+            public readonly Random Rand;
             public SSScope Parent { get; private set; }
-            public Dictionary<string, SSObject> variableTable { get; private set; }
+            public Dictionary<string, SSObject> VariableTable { get; private set; }
 
             public SSScope(SSScope parent)
             {
                 this.Parent = parent;
-                this.variableTable = new Dictionary<string, SSObject>(32);
+                this.VariableTable = new Dictionary<string, SSObject>(32);
                 this.Output = parent == null ? null : parent.Output;
                 this.Output = Output ?? Console.Out;
                 this.Rand = new Random();
@@ -29,15 +29,15 @@ namespace Slingshot
             public SSObject Find(String name)
             {
                 //Func<SSExpression[], SSScope, SSObject> func;
-                //builtinFunctions.TryGetValue(name, out func);
+                //BUILTIN_FUNCTIONS.TryGetValue(name, out func);
                 //if (func != null)
                 //    return func;
                 SSScope current = this;
                 while (current != null)
                 {
-                    if (current.variableTable.ContainsKey(name))
+                    if (current.VariableTable.ContainsKey(name))
                     {
-                        return current.variableTable[name];
+                        return current.VariableTable[name];
                     }
                     current = current.Parent;
                 }
@@ -46,28 +46,29 @@ namespace Slingshot
 
             public SSObject Define(String name, SSObject value)
             {
-                this.variableTable.Add(name, value);
+                this.VariableTable.Add(name, value);
                 return value;
             }
 
             public SSObject Undefine(String name)
             {
-                return variableTable.Remove(name);
+                return VariableTable.Remove(name);
             }
 
-            public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> builtinFunctions =
+            private static readonly Dictionary<String, Func<SSExpression[], SSScope, SSObject>> 
+                BUILTIN_FUNCTIONS =
                 new Dictionary<String, Func<SSExpression[], SSScope, SSObject>>(64);
 
             public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> BuiltinFunctions
             {
-                get { return builtinFunctions; }
+                get { return BUILTIN_FUNCTIONS; }
             }
 
             // Dirty HACK for fluent API.
             public SSScope BuildIn(String name, Func<SSExpression[], SSScope, SSObject> builtinFuntion)
             {
                 //Console.WriteLine("add [{0}]".Fmt(name));
-                SSScope.builtinFunctions.Add(name, builtinFuntion);
+                SSScope.BUILTIN_FUNCTIONS.Add(name, builtinFuntion);
                 return this;
             }
 
@@ -77,14 +78,14 @@ namespace Slingshot
                 var scope = new SSScope(this);
                 for (var i = 0; i < values.Length; i++)
                 {
-                    scope.variableTable.Add(toks[i].Value, values[i]);
+                    scope.VariableTable.Add(toks[i].Value, values[i]);
                 }
                 return scope;
             }
 
             public SSObject FindInTop(String name)
             {
-                return variableTable.ContainsKey(name) ? variableTable[name] : null;
+                return VariableTable.ContainsKey(name) ? VariableTable[name] : null;
             }
 
         }

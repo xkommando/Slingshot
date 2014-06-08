@@ -8,13 +8,18 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public class SSFile : SSObject
-        {
+        //public class SSFile : SSObject
+        //{
 
-            public override object Clone()
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    public override object Clone()
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public override bool Eq(object obj)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }
