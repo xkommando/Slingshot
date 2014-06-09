@@ -8,7 +8,7 @@ using Slingshot.Interpretor;
 
 namespace Slingshot
 {
-    namespace BuildIn
+    namespace BuiltIn
     {
 
         partial struct Functions
@@ -17,24 +17,6 @@ namespace Slingshot
             public struct IO
             {
 
-                public static SSObject Log(SSExpression[] exps, SSScope scope)
-                {
-                    var ret = exps.Evaluate(scope);
-                    var oput = scope.Output;
-                    scope.Output.WriteLine("----- LOG -----");
-                    if (exps.Length > 0)
-                    {
-                        var exp = exps[0];
-                        if (exp.Parent != null)
-                            oput.WriteLine(exp.Parent.Token.Value);
-                        oput.WriteLine("\t" + exp.Token.Value);
-                        exp.Children.ForEach(a => oput.Write(a.Token.Value + "   "));
-                    }
-                    oput.WriteLine();
-                    ret.ForEach(a => oput.Write("   " + a.ToString()));
-                    oput.WriteLine();
-                    return "---------------";
-                }
 
                 public static SSObject OutStream(SSExpression[] exps, SSScope scope)
                 {

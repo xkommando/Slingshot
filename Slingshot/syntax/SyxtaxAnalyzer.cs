@@ -7,7 +7,7 @@ using Slingshot.Compiler;
 
 namespace Slingshot
 {
-    namespace compiler
+    namespace Compiler
     {
         public class SyntaxAnalyzer
         {

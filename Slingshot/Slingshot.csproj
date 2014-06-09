@@ -62,11 +62,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="builtin\Flow.cs" />
+    <Compile Include="builtin\Misc.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="buildin\Numbers.cs" />
-    <Compile Include="buildin\Lists.cs" />
+    <Compile Include="builtin\Numbers.cs" />
+    <Compile Include="builtin\Lists.cs" />
     <Compile Include="InterpretorAux.cs" />
-    <Compile Include="buildin\IOs.cs" />
+    <Compile Include="builtin\IOs.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="SSInterpretor.cs" />
     <Compile Include="ssobject\io\SSFile.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="ssobject\SSList.cs" />
     <Compile Include="ssobject\SSNumeric.cs" />
     <Compile Include="ssobject\SSBool.cs" />
+    <Compile Include="ssobject\SSSet.cs" />
     <Compile Include="ssobject\SSString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SSExpression.cs" />

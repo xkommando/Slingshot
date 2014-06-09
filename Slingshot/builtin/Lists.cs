@@ -8,7 +8,7 @@ using Slingshot.Interpretor;
 
 namespace Slingshot
 {
-    namespace BuildIn
+    namespace BuiltIn
     {
         public partial struct Functions
         {

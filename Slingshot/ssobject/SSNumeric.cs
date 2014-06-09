@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Slingshot
 {
@@ -22,7 +21,10 @@ namespace Slingshot
             {
                 this.Val = valInt;
             }
-
+            public SSInteger(int valInt)
+            {
+                this.Val = valInt;
+            }
             public override object Clone()
             {
                 return new SSInteger(Val);
@@ -42,6 +44,11 @@ namespace Slingshot
             {
                 return Val.GetHashCode();
             }
+
+            public static implicit operator int(SSInteger number)
+            {
+                return (int)number.Val;
+            }
             public static implicit operator Int64(SSInteger number)
             {
                 return number.Val;
@@ -52,6 +59,10 @@ namespace Slingshot
                 return (double)number.Val;
             }
 
+            public static implicit operator SSInteger(int value)
+            {
+                return new SSInteger(value);
+            }
             public static implicit operator SSInteger(Int64 value)
             {
                 return new SSInteger(value);

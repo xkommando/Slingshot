@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Slingshot.Objects;
-using Slingshot.BuildIn;
+using Slingshot.BuiltIn;
 
 namespace Slingshot
 {
@@ -77,34 +77,6 @@ namespace Slingshot
                     {
                         var first = current.Children[0];
                         tok = first.Token;
-
-                        // @see Code Token KEY_WORDS
-                        switch(tok.Type)
-                        {
-                            case TokenType.Def:
-                                return scope.Define(current.Children[1].Token.Value, 
-                                                    current.Children[2].Evaluate(new SSScope(scope)));
-
-                            case TokenType.UnDef:
-                                return scope.Undefine(current.Children[1].Token.Value);
-
-                            case TokenType.Func:
-                                var parameters = current.Children[1].Children.Select(exp => exp.Token).ToArray();
-                                var body = current.Children[2];
-                                var newScope = new SSScope(scope);
-                                return new SSFunction(body, parameters, newScope);
-
-                            //case TokenType.QMark:
-                            case TokenType.If:
-                                var condition = (SSBool)(current.Children[1].Evaluate(scope));
-                                current = condition ? current.Children[2] : current.Children[3];
-                                continue;
-
-                            case TokenType.True:
-                                    return SSBool.NSTrue;
-                            case TokenType.False:
-                                    return SSBool.NSFalse;
-                        }
       
                         Func<SSExpression[], SSScope, SSObject> func;
                         SSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);

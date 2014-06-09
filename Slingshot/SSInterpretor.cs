@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Slingshot.Compiler;
 using Slingshot.Objects;
-using Slingshot.BuildIn;
+using Slingshot.BuiltIn;
 
 namespace Slingshot
 {
@@ -17,22 +17,40 @@ namespace Slingshot
             {
                 GLOBAL_SCOPE
                    .LoadLib("stdfunc.ss")
+                   //.LoadLib("qs.ss")
                    .InterpretingInConsole();
             }
 
-
             private static readonly SSScope GLOBAL_SCOPE = new SSScope(null)
+            // control flow
+                   .BuildIn("def", Functions.Flow.Def)
+                   .BuildIn("undef", Functions.Flow.Undef)
+                   .BuildIn("set!", Functions.Flow.Set)
+                   .BuildIn("func", Functions.Flow.Func)
+                   .BuildIn("if", Functions.Flow.If)
+                   .BuildIn("while", Functions.Flow.While)
+                   .BuildIn("loop", Functions.Flow.Loop)
+                   .BuildIn("error", Functions.Flow.Error)
+            // misc functions
+                   .BuildIn("log", Functions.Misc.Log)
+                   .BuildIn("rand", Functions.Misc.Rand)
+                   .BuildIn("hash", Functions.Misc.Hash)
+                   .BuildIn("clone", (nsargs, scope) =>
+                       (scope.Define(nsargs[0].Token.Value, (SSObject)nsargs[1].Evaluate(scope).Clone())))
+                   .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
+            // numeric
                    .BuildIn("+", Functions.Numbers.Add)
                    .BuildIn("**", Functions.Numbers.Power)
                    .BuildIn("-", Functions.Numbers.Sub)
                    .BuildIn("*", Functions.Numbers.Mul)
                    .BuildIn("%", Functions.Numbers.Mod)
                    .BuildIn("abs", Functions.Numbers.Abs)
-                   .BuildIn("set!", Functions.Numbers.Set)
-                   .BuildIn("rand", Functions.Numbers.Rand)
 
                    .BuildIn("eq?", (nsargs, scope) => nsargs.Ops<SSObject>(scope, (a, b)=>a.Eq(b)))
                    .BuildIn("==", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.Eq(s2)))
+                   .BuildIn("nq?", (nsargs, scope) => nsargs.Ops<SSObject>(scope, (a, b) => !a.Eq(b)))
+                   .BuildIn("!=", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => !s1.Eq(s2)))
+                   
                    .BuildIn(">", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.FloatVal() > s2.FloatVal()))
                    .BuildIn("<", (nsargs, scope) =>
                        (((SSNumber)nsargs[0].Evaluate(scope)).FloatVal()
@@ -59,7 +77,7 @@ namespace Slingshot
 
                    .BuildIn("xnor", (nsargs, scope) => nsargs.Ops<SSBool>(scope,
                                                             (a, b) => (!a && !b) || (b && a)))
-
+               // list processing
                    .BuildIn("car", (nsargs, scope) => nsargs.RetrieveSList(scope, "car").First())
                    .BuildIn("cdr", (nsargs, scope) => new SSList(nsargs.RetrieveSList(scope, "cdr").Skip(1)))
                    .BuildIn("cons", Functions.Lists.Cons)
@@ -69,15 +87,8 @@ namespace Slingshot
                    .BuildIn("integer?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSInteger)
                    .BuildIn("float?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSFloat)
                    .BuildIn("dict?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSDict)
+                   .BuildIn("null?", Functions.Lists.IsNull)
 
-                   .BuildIn("clone", (nsargs, scope) =>
-                       (scope.Define(nsargs[0].Token.Value, (SSObject)nsargs[1].Evaluate(scope).Clone())))
-                   .BuildIn("log", Functions.IO.Log)
-                   .BuildIn("error", (nsargs, scope) => { var ret = nsargs.Evaluate(scope); 
-                                            ret.ForEach(a =>scope.Output.WriteLine(a)); 
-                                            throw new SystemException(ret.Last().ToString()); })
-                   
-                   .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
                     // append atom + list || list + atom || list + list
                    .BuildIn("append", Functions.Lists.Append)
                    .BuildIn("pop-back!", Functions.Lists.Popback)
@@ -89,7 +100,8 @@ namespace Slingshot
                    .BuildIn("to-list", Functions.Lists.StrToLs)
                     // (length a-list) || (length a-str)
                    .BuildIn("length", Functions.Lists.Length)
-                   .BuildIn("null?", Functions.Lists.IsNull);
+
+                   ;
 
         }
 

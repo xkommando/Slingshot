@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.IO;
 using Slingshot.Compiler;
-using Slingshot.compiler;
 using Slingshot.Objects;
 
 namespace Slingshot
@@ -54,6 +54,7 @@ namespace Slingshot
                 return scope;
             }
 
+
             public static void InterpretingInConsole(this SSScope scope)
             {
                 var file = new CodeFile();
@@ -74,7 +75,11 @@ namespace Slingshot
                             syntax.Take(file);
 
                             Console.ForegroundColor = ConsoleColor.Green;
+                            Stopwatch w = new Stopwatch();
+                            w.Start();
                             Console.WriteLine(">>> " + syntax.Expressions.Last().Evaluate(scope));
+                            w.Stop();
+                            Console.WriteLine(w.Elapsed);
                         }
                     }
                     catch (Exception ex)
@@ -85,19 +90,6 @@ namespace Slingshot
                     }
                 }
             }
-
-
-            public static IEnumerable<T> Evaluate<T>(this IEnumerable<SSExpression> expressions, SSScope scope)
-            where T : SSObject
-            {
-                return expressions.Evaluate(scope).Cast<T>();
-            }
-
-            public static IEnumerable<SSObject> Evaluate(this IEnumerable<SSExpression> expressions, SSScope scope)
-            {
-                return expressions.Select(exp => exp.Evaluate(scope));
-            }
-
 
             public static SSBool ChainRelation(this SSExpression[] expressions,
                                                 SSScope scope, Func<SSNumber, SSNumber, Boolean> relation)

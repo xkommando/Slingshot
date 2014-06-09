@@ -6,7 +6,7 @@ using Slingshot.Objects;
 using Slingshot.Compiler;
 using Slingshot.Interpretor;
 
-namespace Slingshot.BuildIn
+namespace Slingshot.BuiltIn
 {
     public partial struct Functions
     {
@@ -106,23 +106,14 @@ namespace Slingshot.BuildIn
                 var nums = args.Select(o => o.Evaluate(scope)).ToArray();
                 return nums[0].Eq(nums[1]);
             }
-
-            public static SSObject Set(SSExpression[] args, SSScope scope)
-            {
-                (args.Length == 2).OrThrows("expect two parameters");
-                var b0 = args[0];
-                var b1 = args[1].Evaluate(scope);
-                scope.Undefine(b0.Token.Value);
-                scope.Define(b0.Token.Value, b1);
-                return b1;
-            }
-
-            public static SSObject Rand(SSExpression[] args, SSScope scope)
-            {
-                return args.Length == 1 ? scope.Rand.Next((int)((SSInteger)args[0].Evaluate(scope)))
-                    : scope.Rand.Next();
-            }
-
+            //// ++
+            //public static SSObject Dec(SSExpression[] args, SSScope scope)
+            //{
+            //}
+            ////--
+            //public static SSObject Inc(SSExpression[] args, SSScope scope)
+            //{
+            //}
         }
 
     }

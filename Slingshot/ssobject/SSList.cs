@@ -52,7 +52,7 @@ namespace Slingshot
 
             public override String ToString()
             {
-                return "(list " + " ".Join(this.Val) + ")";
+                return "[ " + " ".Join(this.Val) + "]";
             }
 
             public override bool Eq(SSObject obj)

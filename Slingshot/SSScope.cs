@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Slingshot.Objects;
-using Slingshot.BuildIn;
+using Slingshot.BuiltIn;
 
 namespace Slingshot
 {
@@ -21,9 +21,11 @@ namespace Slingshot
             {
                 this.Parent = parent;
                 this.VariableTable = new Dictionary<string, SSObject>(32);
+
                 this.Output = parent == null ? null : parent.Output;
                 this.Output = Output ?? Console.Out;
-                this.Rand = new Random();
+                this.Rand = parent == null ? null : parent.Rand;
+                this.Rand = Rand ?? new Random();
             }
 
             public SSObject Find(String name)
@@ -88,6 +90,20 @@ namespace Slingshot
                 return VariableTable.ContainsKey(name) ? VariableTable[name] : null;
             }
 
+        }
+
+        public static partial class Extensions
+        {
+            public static IEnumerable<T> Evaluate<T>(this IEnumerable<SSExpression> expressions, SSScope scope)
+            where T : SSObject
+            {
+                return expressions.Evaluate(scope).Cast<T>();
+            }
+
+            public static IEnumerable<SSObject> Evaluate(this IEnumerable<SSExpression> expressions, SSScope scope)
+            {
+                return expressions.Select(exp => exp.Evaluate(scope));
+            }
         }
     }
 }

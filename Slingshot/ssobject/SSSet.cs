@@ -2,24 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Slingshot.Compiler;
+using System.Threading.Tasks;
 
 namespace Slingshot
 {
     namespace Objects
     {
-        public class SSDict : SSObject
+        public class SSSet : SSObject
         {
-            public Dictionary<SSObject, SSObject> Val { get; private set; }
-            public SSDict(Dictionary<SSObject, SSObject> d)
+
+            public HashSet<SSObject> Val { get; private set; }
+
+            public SSSet(HashSet<SSObject> s)
             {
-                this.Val = d;
+                Val = s;
             }
 
             public override bool Eq(SSObject obj)
             {
-                var dict = obj as SSDict;
-                return dict != null && Val.Equals(dict.Val);
+                return obj is SSSet && Val.Equals(((SSSet) obj).Val);
             }
 
             public override int GetHashCode()
@@ -29,9 +30,8 @@ namespace Slingshot
 
             public override object Clone()
             {
-                 return new SSDict( new Dictionary<SSObject, SSObject>(Val));
+                return new SSSet(new HashSet<SSObject>(Val));
             }
         }
     }
-
 }
