@@ -11,7 +11,6 @@ namespace Slingshot
         {
             public struct Flow
             {
-
                 public static SSObject Def(SSExpression[] exps, SSScope scope)
                 {
                     return scope.Define(exps[0].Token.Value, exps[1].Evaluate(scope));
@@ -111,8 +110,12 @@ namespace Slingshot
                 public static SSObject Error(SSExpression[] exps, SSScope scope)
                 {
                     var ret = exps.Evaluate(scope);
-                    ret.ForEach(a => scope.Output.WriteLine(a));
-                    throw new SystemException(ret.Last().ToString());
+                    if (ret != null)
+                    {
+                        ret.ForEach(a => scope.Output.WriteLine(a));
+                        throw new SystemException(ret.Last().ToString());
+                    }
+                    throw new SystemException("Error");
                 }
             
             }
