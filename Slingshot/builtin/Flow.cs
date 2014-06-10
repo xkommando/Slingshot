@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Slingshot.Objects;
 using Slingshot.Compiler;
@@ -41,7 +40,6 @@ namespace Slingshot
                     return new SSFunction(body, parameters, nsc);
                 }
 
-
                 public static SSObject If(SSExpression[] exps, SSScope scope)
                 {
                     (exps.Length == 3).OrThrows("expect three parameters");
@@ -57,7 +55,6 @@ namespace Slingshot
                     return ret;
                 }
 
-
                 public static SSObject Loop(SSExpression[] exps, SSScope scope)
                 {
                     (exps.Length == 2).OrThrows("expect two parameters");
@@ -67,8 +64,48 @@ namespace Slingshot
                     {
                         ret = exps[1].Evaluate(scope);
                     }
-
                     return ret;
+                }
+
+
+                /// <summary>
+                /// (switch (val)
+                /// case (a) (b)
+                /// case (c) (d)
+                /// 
+                /// )
+                /// </summary>
+                public static SSObject Switch(SSExpression[] exps, SSScope scope)
+                {
+                    var cond = exps[0].Evaluate(scope);
+                    //var rest = exps.Skip(1);
+                    for (int i = 2; i < exps.Count(); i += 3)
+                    {
+                        if(exps[i].Evaluate(scope).Eq(cond))
+                            return exps[++i].Evaluate(scope);
+                    }
+                    return exps.Last().Evaluate(scope);
+                }
+
+                /// <summary>
+                /// try{
+                ///     value
+                /// }
+                /// catch(ex){
+                /// }
+                /// </summary>
+                public static SSObject TryCatch(SSExpression[] exps, SSScope scope)
+                {
+                    try
+                    {
+                        return exps[0].Evaluate(scope);
+                    }
+                    catch (Exception ex)
+                    {
+                        var tok = exps[2].Children[0].Token;
+                        scope.Define(tok.Value, ex.Message);
+                        return exps[3].Evaluate(scope);
+                    }
                 }
 
                 public static SSObject Error(SSExpression[] exps, SSScope scope)

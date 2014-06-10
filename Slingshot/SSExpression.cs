@@ -116,7 +116,7 @@ namespace Slingshot
 
             //public static String PrettyPrint(String[] lexes)
             //{
-            //    return "[" + (", ".Join(lexes.Select(s => "'" + s + "'"))) + "]";
+            //    return "[" + (", ".Join(lexes.Switch(s => "'" + s + "'"))) + "]";
             //}
 
         }

@@ -57,6 +57,7 @@ namespace Slingshot
 
             public static void InterpretingInConsole(this SSScope scope)
             {
+                var w = new Stopwatch();
                 var file = new CodeFile();
                 var syntax = new SyntaxAnalyzer();
                 while (true)
@@ -75,11 +76,12 @@ namespace Slingshot
                             syntax.Take(file);
 
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Stopwatch w = new Stopwatch();
+                            
+                            w.Reset();
                             w.Start();
                             Console.WriteLine(">>> " + syntax.Expressions.Last().Evaluate(scope));
                             w.Stop();
-                            Console.WriteLine(w.Elapsed);
+                            Console.WriteLine(w.ElapsedMilliseconds + "ms");
                         }
                     }
                     catch (Exception ex)

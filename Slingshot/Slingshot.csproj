@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="builtin\Dicts.cs" />
     <Compile Include="builtin\Flow.cs" />
     <Compile Include="builtin\Misc.cs" />
     <Compile Include="Extensions.cs" />

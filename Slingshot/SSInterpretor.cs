@@ -30,7 +30,10 @@ namespace Slingshot
                    .BuildIn("if", Functions.Flow.If)
                    .BuildIn("while", Functions.Flow.While)
                    .BuildIn("loop", Functions.Flow.Loop)
+                   .BuildIn("switch", Functions.Flow.Switch)
+                   .BuildIn("try", Functions.Flow.TryCatch)
                    .BuildIn("error", Functions.Flow.Error)
+
             // misc functions
                    .BuildIn("log", Functions.Misc.Log)
                    .BuildIn("rand", Functions.Misc.Rand)

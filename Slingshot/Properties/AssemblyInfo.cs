@@ -6,7 +6,7 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("[assembly: AssemblyTitleAttribute()]")]
+[assembly: AssemblyTitle("Slingshot")]
 [assembly: AssemblyDescription("Interpretor for the Language Singshot")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("bowencai.com")]
@@ -18,7 +18,7 @@ using System.Resources;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("4dd275ec-9945-4584-bcd3-6277752efe42")]

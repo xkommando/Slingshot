@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using Slingshot.Objects;
@@ -89,7 +90,6 @@ namespace Slingshot
                         o2 = o1;
                     }
 
-
                     if (o2 is SSList)
                         return new SSList(nsl.Concat((SSList)o2));
                     else
@@ -139,14 +139,19 @@ namespace Slingshot
 
                 public static SSObject ElemAt(SSExpression[] exps, SSScope scope)
                 {
-                    SSList list = null;
-                    SSInteger idx = null;
-                    (exps.Length == 2
-                        && (list = (exps[0].Evaluate(scope) as SSList)) != null
-                        && (idx = (exps[1]).Evaluate(scope) as SSInteger) != null
-                    ).OrThrows("Expect a list and an integer , get [{0}] and [{1}]"
-                                .Fmt(exps[0].Evaluate(scope).GetType(), exps[1].Evaluate(scope).GetType()));
-                    return list.ElementAt((int)idx);
+                    (exps.Length == 2).OrThrows("Expect a list and an integer ");
+
+                    var idx = exps[1].Evaluate(scope);
+
+                    var ret = exps[0].Evaluate(scope);
+                    if (ret is SSList)
+                        return ((SSList) ret)[(SSInteger)idx];
+                    else if (ret is SSString)
+                        return ((SSString)ret).Val[(SSInteger)idx];
+                    else if (ret is SSDict)
+                        return ((SSDict)ret).Val[idx];
+                    else
+                        throw new SystemException("wrong type {0}".Fmt(ret.GetType()));
                 }
 
             }
