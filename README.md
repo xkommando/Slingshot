@@ -1,4 +1,4 @@
 NScheme
 =======
 
-A simple Scheme-like language interpretor in C#
+A simple functional language and its C# interpretor
