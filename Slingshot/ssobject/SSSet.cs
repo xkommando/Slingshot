@@ -32,6 +32,16 @@ namespace Slingshot
             {
                 return new SSSet(new HashSet<SSObject>(Val));
             }
+
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSSet)
+                {
+                    this.Val = ((SSSet)other).Val;
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

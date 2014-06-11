@@ -47,8 +47,8 @@ namespace Slingshot
                             scope.Output.WriteLine(ex);
                             ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
                         }
-                        scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
-                            .Fmt(a.Key, a.Value.GetType())));
+                    //    scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
+                     //       .Fmt(a.Key, a.Value.GetType())));
                     }
                 }
                 return scope;

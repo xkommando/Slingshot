@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Slingshot.Compiler;
 
 namespace Slingshot
@@ -78,6 +79,15 @@ namespace Slingshot
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
                 return this.Val.GetEnumerator();
+            }
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSList)
+                {
+                    this.Val = ((SSList)other).Val;
+                    return true;
+                }
+                return false;
             }
 
         }

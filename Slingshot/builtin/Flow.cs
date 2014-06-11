@@ -26,8 +26,11 @@ namespace Slingshot
                     (args.Length == 2).OrThrows("expect two parameters");
                     var b0 = args[0];
                     var b1 = args[1].Evaluate(scope);
-                    scope.Undefine(b0.Token.Value);
-                    scope.Define(b0.Token.Value, b1);
+                    if (!b0.Evaluate(scope).Replace(b1))
+                    {
+                        scope.Undefine(b0.Token.Value);
+                        scope.Define(b0.Token.Value, b1);
+                    }
                     return b1;
                 }
 

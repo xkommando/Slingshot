@@ -5,7 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
-
+$tf/
+*.qyi
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

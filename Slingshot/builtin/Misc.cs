@@ -14,7 +14,7 @@ namespace Slingshot
             public struct Misc
             {
 
-                public static SSObject Log(SSExpression[] exps, SSScope scope)
+                public static SSObject Test(SSExpression[] exps, SSScope scope)
                 {
                     var ret = exps.Evaluate(scope);
                     var oput = scope.Output;

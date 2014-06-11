@@ -31,6 +31,16 @@ namespace Slingshot
             {
                  return new SSDict( new Dictionary<SSObject, SSObject>(Val));
             }
+
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSDict)
+                {       
+                    this.Val = ((SSDict) other).Val;
+                    return true;
+                }
+                return false;
+            }
         }
     }
 

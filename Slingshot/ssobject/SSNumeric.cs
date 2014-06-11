@@ -44,6 +44,15 @@ namespace Slingshot
             {
                 return Val.GetHashCode();
             }
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSInteger)
+                {
+                    this.Val = ((SSInteger)other).Val;
+                    return true;
+                }
+                return false;
+            }
 
             public static implicit operator int(SSInteger number)
             {
@@ -112,7 +121,15 @@ namespace Slingshot
             {
                 return Val.GetHashCode();
             }
-
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSFloat)
+                {
+                    this.Val = ((SSFloat)other).Val;
+                    return true;
+                }
+                return false;
+            }
             public static implicit operator double(SSFloat number)
             {
                 return number.Val;

@@ -15,9 +15,11 @@ namespace Slingshot
         {
             public static void Main(string[] args)
             {
+                Console.WriteLine(Math.Exp(3));
                 GLOBAL_SCOPE
-                   .LoadLib("stdfunc.ss")
-                   //.LoadLib("qs.ss")
+                    .LoadLib("basic.ss")
+                   .LoadLib("algo.ss")
+                   .LoadLib("statistic.ss")
                    .InterpretingInConsole();
             }
 
@@ -35,7 +37,7 @@ namespace Slingshot
                    .BuildIn("error", Functions.Flow.Error)
 
             // misc functions
-                   .BuildIn("log", Functions.Misc.Log)
+                   .BuildIn("test", Functions.Misc.Test)
                    .BuildIn("rand", Functions.Misc.Rand)
                    .BuildIn("hash", Functions.Misc.Hash)
                    .BuildIn("clone", (nsargs, scope) =>
@@ -43,11 +45,14 @@ namespace Slingshot
                    .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
             // numeric
                    .BuildIn("+", Functions.Numbers.Add)
-                   .BuildIn("**", Functions.Numbers.Power)
                    .BuildIn("-", Functions.Numbers.Sub)
                    .BuildIn("*", Functions.Numbers.Mul)
+                   .BuildIn("**", Functions.Numbers.Power)
+                   .BuildIn("/", (nsargs, scope)=>nsargs.Ops<SSNumber>(scope, (a, b)=>a.FloatVal() / b.FloatVal()))
                    .BuildIn("%", Functions.Numbers.Mod)
                    .BuildIn("abs", Functions.Numbers.Abs)
+                   .BuildIn("log", Functions.Numbers.Log)
+                   .BuildIn("exp", Functions.Numbers.Log)
 
                    .BuildIn("eq?", (nsargs, scope) => nsargs.Ops<SSObject>(scope, (a, b)=>a.Eq(b)))
                    .BuildIn("==", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.Eq(s2)))

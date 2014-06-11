@@ -33,6 +33,15 @@ namespace Slingshot
             {
                 return Val.GetHashCode();
             }
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSString)
+                {
+                    this.Val = ((SSString)other).Val;
+                    return true;
+                }
+                return false;
+            }
             public static implicit operator String(SSString value)
             {
                 return value.Val;

@@ -8,7 +8,7 @@ namespace Slingshot
 {
     namespace Objects
     {
-        public class SSChar: SSNumber
+        public class SSChar : SSNumber
         {
             public char Val { get; private set; }
 
@@ -16,6 +16,7 @@ namespace Slingshot
             {
                 Val = c;
             }
+
             public override String ToString()
             {
                 return "'" + Val + "'";
@@ -61,6 +62,16 @@ namespace Slingshot
             public override double FloatVal()
             {
                 return Val;
+            }
+
+            public override bool Replace(SSObject other)
+            {
+                if (other is SSChar)
+                {
+                    this.Val = ((SSChar) other).Val;
+                    return true;
+                }
+                return false;
             }
         }
     }

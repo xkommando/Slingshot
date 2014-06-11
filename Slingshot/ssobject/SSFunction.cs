@@ -13,6 +13,7 @@ namespace Slingshot
             public SSExpression Body { get; private set; }
             public CodeToken[] Parameters { get; private set; }
             public SSScope Scope { get; private set; }
+
             public bool IsPartial()
             {
                 return this.ComputeFilledParameters().Length.InBetween(1, this.Parameters.Length);
@@ -85,6 +86,10 @@ namespace Slingshot
             public override int GetHashCode()
             {
                 return Body.GetHashCode() * 31 + Parameters.GetHashCode();
+            }
+            public override bool Replace(SSObject other)
+            {
+                return false;
             }
         }
     }

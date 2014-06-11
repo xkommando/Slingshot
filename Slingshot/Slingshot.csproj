@@ -79,9 +79,10 @@
     <Compile Include="builtin\Dicts.cs" />
     <Compile Include="builtin\Flow.cs" />
     <Compile Include="builtin\Misc.cs" />
+    <Compile Include="builtin\RegEx.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="builtin\Numbers.cs" />
-    <Compile Include="builtin\Lists.cs" />
+    <Compile Include="builtin\Seqs.cs" />
     <Compile Include="InterpretorAux.cs" />
     <Compile Include="builtin\IOs.cs" />
     <Compile Include="Iterator.cs" />

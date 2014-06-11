@@ -37,7 +37,7 @@ namespace Slingshot
             }
 
             public abstract bool Eq(SSObject obj);
-
+            public abstract bool Replace(SSObject other);
             public abstract object Clone();
         }
 

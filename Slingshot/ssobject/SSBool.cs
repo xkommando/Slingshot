@@ -55,7 +55,12 @@ namespace Slingshot
             {
                 return value ? NSTrue : NSFalse;
             }
-  
+
+
+            public override bool Replace(SSObject other)
+            {
+                return false;
+            }
         }
 
 
