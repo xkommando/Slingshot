@@ -34,12 +34,13 @@ namespace Slingshot
                 //BUILTIN_FUNCTIONS.TryGetValue(name, out func);
                 //if (func != null)
                 //    return func;
+                SSObject obj = null;
                 SSScope current = this;
                 while (current != null)
                 {
-                    if (current.VariableTable.ContainsKey(name))
+                    if (current.VariableTable.TryGetValue(name, out obj))
                     {
-                        return current.VariableTable[name];
+                        return obj;
                     }
                     current = current.Parent;
                 }
@@ -57,20 +58,34 @@ namespace Slingshot
                 return VariableTable.Remove(name);
             }
 
-            private static readonly Dictionary<String, Func<SSExpression[], SSScope, SSObject>> 
-                BUILTIN_FUNCTIONS =
-                new Dictionary<String, Func<SSExpression[], SSScope, SSObject>>(64);
-
-            public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> BuiltinFunctions
+            public SSObject Remove(String name)
             {
-                get { return BUILTIN_FUNCTIONS; }
+                SSScope current = this;
+                while (current != null)
+                {
+                    if (current.VariableTable.Remove(name))
+                    {
+                        return true;
+                    }
+                    current = current.Parent;
+                }
+                throw new Exception(name + " is undefined.");
             }
+
+            public static readonly Dictionary<String, Func<SSExpression[], SSScope, SSObject>>
+                BuiltinFunctions =
+                new Dictionary<String, Func<SSExpression[], SSScope, SSObject>>(512);
+
+            //public static Dictionary<String, Func<SSExpression[], SSScope, SSObject>> BuiltinFunctions
+            //{
+            //    get { return BUILTIN_FUNCTIONS; }
+            //}
 
             // Dirty HACK for fluent API.
             public SSScope BuildIn(String name, Func<SSExpression[], SSScope, SSObject> builtinFuntion)
             {
                 //Console.WriteLine("add [{0}]".Fmt(name));
-                SSScope.BUILTIN_FUNCTIONS.Add(name, builtinFuntion);
+                SSScope.BuiltinFunctions.Add(name, builtinFuntion);
                 return this;
             }
 
@@ -87,7 +102,10 @@ namespace Slingshot
 
             public SSObject FindInTop(String name)
             {
-                return VariableTable.ContainsKey(name) ? VariableTable[name] : null;
+                SSObject obj = null;
+                VariableTable.TryGetValue(name, out obj);
+                return obj;
+                //return VariableTable.ContainsKey(name) ? VariableTable[name] : null;
             }
 
         }

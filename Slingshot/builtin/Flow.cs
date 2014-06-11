@@ -21,6 +21,9 @@ namespace Slingshot
                     return scope.Undefine(exps[0].Token.Value);
                 }
 
+                /// <summary>
+                /// set scope
+                /// </summary>
                 public static SSObject Set(SSExpression[] args, SSScope scope)
                 {
                     (args.Length == 2).OrThrows("expect two parameters");

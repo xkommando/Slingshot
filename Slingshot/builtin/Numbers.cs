@@ -13,19 +13,19 @@ namespace Slingshot.BuiltIn
 
         public struct Numbers
         {
-            public static SSObject Add(IEnumerable<SSExpression> args, SSScope scope)
+            public static SSObject Add(IEnumerable<SSExpression> exps, SSScope scope)
             {
-                var iter = args.Select(obj => obj.Evaluate(scope)).GetEnumerator();
+                var iter = exps.Select(obj => obj.Evaluate(scope)).GetEnumerator();
 
-                double db = args.Select(exps => exps.Evaluate(scope))
-                                                .Where(exps => exps is SSFloat)
+                double db = exps.Select(exp => exp.Evaluate(scope))
+                                                .Where(exp => exp is SSFloat)
                                                 .Cast<SSFloat>()
-                                                .Sum(exps => exps);
-                
-                Int64 i = args.Select(exps => exps.Evaluate(scope))
-                                        .Where(exps => exps is SSInteger)
+                                                .Sum(v => v);
+
+                Int64 i = exps.Select(exp => exp.Evaluate(scope))
+                                        .Where(v => v is SSInteger)
                                         .Cast<SSInteger>()
-                                        .Sum(exps => exps);
+                                        .Sum(v => v);
 
                 if (Math.Abs(db) < 0.000001)
                     return (SSInteger)i;
@@ -34,15 +34,15 @@ namespace Slingshot.BuiltIn
                 //return -0.000001 < db && db < 0.000001 ? (SSInStream)i : (SSFloat)(db + i);
             }
 
-            public static SSObject Sub(SSExpression[] args, SSScope scope)
+            public static SSObject Sub(SSExpression[] exps, SSScope scope)
             {
-                var first = args[0].Evaluate(scope);
+                var first = exps[0].Evaluate(scope);
                 //var b = first is SSFloat ? (SSFloat)first : (SSInteger)first;
-                if (args.Length == 1)
+                if (exps.Length == 1)
                     return first is SSFloat ? -(SSFloat)first : -(SSInteger)first;
                 else
                 {
-                    var sec = Add(args.Skip(1), scope);
+                    var sec = Add(exps.Skip(1), scope);
                     if (sec is SSFloat || first is SSFloat)
                         return (first as SSNumber).FloatVal() - (sec as SSFloat).FloatVal();
                     else
@@ -55,56 +55,56 @@ namespace Slingshot.BuiltIn
             }
 
 
-            public static SSObject Power(SSExpression[] args, SSScope scope)
+            public static SSObject Power(SSExpression[] exps, SSScope scope)
             {
-                (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var nums = args.Select(o => o.Evaluate(scope)).ToArray();
+                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var nums = exps.Select(o => o.Evaluate(scope)).ToArray();
                 var i1 = (SSNumber)nums[0];//is SSFloat ? (SSFloat)nums[0] : (SSInteger)nums[0];
                 var i2 = (SSNumber)nums[1];// is SSFloat ? (SSFloat)nums[1] : (SSInteger)nums[1];
                 return Math.Pow(i1.FloatVal(), i2.FloatVal());
             }
 
-            public static SSObject Mul(SSExpression[] args, SSScope scope)
+            public static SSObject Mul(SSExpression[] exps, SSScope scope)
             {
-                var iter = args.Select(obj => obj.Evaluate(scope)).GetEnumerator();
+                var iter = exps.Select(obj => obj.Evaluate(scope)).GetEnumerator();
                 double db = 1.0;
-                var dbE = args.Select(exps => exps.Evaluate(scope))
-                                .Where(exps => exps is SSFloat);
+                var dbE = exps.Select(exp => exp.Evaluate(scope))
+                                .Where(v => v is SSFloat);
                 if (dbE.Count() > 0)
                     db = dbE.Cast<SSFloat>().
-                                Aggregate((exps, b) => exps * b);
+                                Aggregate((exp, b) => exp * b);
 
                 Int64 i = 1;
-                var iE = args.Select(exps => exps.Evaluate(scope))
-                                .Where(exps => exps is SSInteger);
+                var iE = exps.Select(exp => exp.Evaluate(scope))
+                                .Where(exp => exp is SSInteger);
 
                 if (iE.Count() > 0)
                     i = iE.Cast<SSInteger>().
-                                Aggregate((exps, b) => exps * b);
+                                Aggregate((exp, b) => exp * b);
 
                 return -0.0000001 < db && db < 0.0000001 ? i : db * i;
             }
 
-            public static SSObject Mod(SSExpression[] args, SSScope scope)
+            public static SSObject Mod(SSExpression[] exps, SSScope scope)
             {
-                (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var two = args.Evaluate<SSInteger>(scope).ToArray();
+                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var two = exps.Evaluate<SSInteger>(scope).ToArray();
 
                 return two[0] % two[1];
             }
 
-            public static SSObject Log(SSExpression[] args, SSScope scope)
+            public static SSObject Log(SSExpression[] exps, SSScope scope)
             {
-                (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var two = args.Evaluate<SSNumber>(scope).ToArray();
+                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var two = exps.Evaluate<SSNumber>(scope).ToArray();
 
                 return Math.Log(two[1].FloatVal(), two[0].FloatVal());
             }
 
-            public static SSObject Abs(SSExpression[] args, SSScope scope)
+            public static SSObject Abs(SSExpression[] exps, SSScope scope)
             {
-                //(args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var ret = args.Evaluate(scope).First();
+                //(exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var ret = exps.Evaluate(scope).First();
                 if (ret is SSFloat)
                     return Math.Abs((SSFloat) ret);
                 else
@@ -112,25 +112,41 @@ namespace Slingshot.BuiltIn
                 //return ret is SSFloat ? Math.Abs((SSFloat)ret) : Math.Abs((SSInteger)ret);
             }
 
-            public static SSObject Exp(SSExpression[] args, SSScope scope)
+            public static SSObject Exp(SSExpression[] exps, SSScope scope)
             {
-                //(args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var ret = (SSNumber)args.Evaluate(scope).First();
+                //(exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var ret = (SSNumber)exps.Evaluate(scope).First();
                 return Math.Exp(ret.FloatVal());
             }
 
-            public static SSObject Eq(SSExpression[] args, SSScope scope)
+
+            public static SSObject Sin(SSExpression[] exps, SSScope scope)
             {
-                (args.Length == 2).OrThrows("expect 2 parameters, get " + args.Length);
-                var nums = args.Select(o => o.Evaluate(scope)).ToArray();
+                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
+                return Math.Cos((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
+            }
+            public static SSObject Cos(SSExpression[] exps, SSScope scope)
+            {
+                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
+                return Math.Sin((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
+            }
+            public static SSObject Tan(SSExpression[] exps, SSScope scope)
+            {
+                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
+                return Math.Tan((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
+            }
+            public static SSObject Eq(SSExpression[] exps, SSScope scope)
+            {
+                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
+                var nums = exps.Select(o => o.Evaluate(scope)).ToArray();
                 return nums[0].Eq(nums[1]);
             }
             //// ++
-            //public static SSObject Dec(SSExpression[] args, SSScope scope)
+            //public static SSObject Dec(SSExpression[] exps, SSScope scope)
             //{
             //}
             ////--
-            //public static SSObject Inc(SSExpression[] args, SSScope scope)
+            //public static SSObject Inc(SSExpression[] exps, SSScope scope)
             //{
             //}
         }
@@ -141,39 +157,39 @@ namespace Slingshot.BuiltIn
     {
 
 
-        public static SSObject Ops<T>(this SSExpression[] args, SSScope scope, Func<T, T, SSObject> ops)
+        public static SSObject Ops<T>(this SSExpression[] exps, SSScope scope, Func<T, T, SSObject> ops)
             where T : SSObject
         {
-            (args.Length == 2).OrThrows("expect two parameters");
-            var ret = args.Evaluate<T>(scope);
+            (exps.Length == 2).OrThrows("expect two parameters");
+            var ret = exps.Evaluate<T>(scope);
             var b0 = ret.ElementAt(0);
             var b1 = ret.ElementAt(1);
             return ops(b0, b1);
         }
 
-        public static SSObject Op<T>(this SSExpression[] args, SSScope scope, Func<T, SSObject> ops)
+        public static SSObject Op<T>(this SSExpression[] exps, SSScope scope, Func<T, SSObject> ops)
             where T : SSObject
         {
-            (args.Length == 1).OrThrows("expect one parameter");
-            var ret = args.Evaluate<T>(scope).First();
+            (exps.Length == 1).OrThrows("expect one parameter");
+            var ret = exps.Evaluate<T>(scope).First();
             return ops(ret);
         }
 
 
 
-        public static SSInteger BitOp(this SSExpression[] args, SSScope scope,
+        public static SSInteger BitOp(this SSExpression[] exps, SSScope scope,
                         Func<SSInteger, SSInteger> ops)
         {
-            (args.Length == 1).OrThrows("expect one or more parameter");
-            var ret = args.Evaluate<SSInteger>(scope).First();
+            (exps.Length == 1).OrThrows("expect one or more parameter");
+            var ret = exps.Evaluate<SSInteger>(scope).First();
             return ops(ret);
         }
 
-        public static SSInteger BitOps(this SSExpression[] args, SSScope scope,
+        public static SSInteger BitOps(this SSExpression[] exps, SSScope scope,
                        Func<SSInteger, SSInteger, SSInteger> ops)
         {
-            (args.Length == 2).OrThrows("expect one or more parameter");
-            var ret = args.Evaluate<SSInteger>(scope);
+            (exps.Length == 2).OrThrows("expect one or more parameter");
+            var ret = exps.Evaluate<SSInteger>(scope);
             var b0 = ret.ElementAt(0);
             var b1 = ret.ElementAt(1);
             return ops(b0, b1);

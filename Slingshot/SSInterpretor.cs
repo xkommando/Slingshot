@@ -15,10 +15,11 @@ namespace Slingshot
         {
             public static void Main(string[] args)
             {
-                Console.WriteLine(Math.Exp(3));
+                //Console.WriteLine(SSScope.BuiltinFunctions.Count);// 64
                 GLOBAL_SCOPE
                     .LoadLib("basic.ss")
                    .LoadLib("algo.ss")
+                   .LoadLib("math.ss")
                    .LoadLib("statistic.ss")
                    .InterpretingInConsole();
             }
@@ -43,7 +44,11 @@ namespace Slingshot
                    .BuildIn("clone", (nsargs, scope) =>
                        (scope.Define(nsargs[0].Token.Value, (SSObject)nsargs[1].Evaluate(scope).Clone())))
                    .BuildIn("typeof", (nsargs, scope) => (SSString)nsargs[0].Evaluate(scope).GetType().FullName)
-            // numeric
+                   .BuildIn("alias", Functions.Misc.Alias)
+                   .BuildIn("rename", Functions.Misc.Rename)
+                   .BuildIn("remove", Functions.Misc.Remove)
+
+                   // numeric
                    .BuildIn("+", Functions.Numbers.Add)
                    .BuildIn("-", Functions.Numbers.Sub)
                    .BuildIn("*", Functions.Numbers.Mul)
@@ -53,6 +58,9 @@ namespace Slingshot
                    .BuildIn("abs", Functions.Numbers.Abs)
                    .BuildIn("log", Functions.Numbers.Log)
                    .BuildIn("exp", Functions.Numbers.Log)
+                   .BuildIn("sin", Functions.Numbers.Sin)
+                   .BuildIn("cos", Functions.Numbers.Cos)
+                   .BuildIn("tan", Functions.Numbers.Tan)
 
                    .BuildIn("eq?", (nsargs, scope) => nsargs.Ops<SSObject>(scope, (a, b)=>a.Eq(b)))
                    .BuildIn("==", (nsargs, scope) => nsargs.ChainRelation(scope, (s1, s2) => s1.Eq(s2)))

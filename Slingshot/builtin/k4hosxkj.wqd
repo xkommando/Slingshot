@@ -36,12 +36,12 @@ namespace Slingshot
                 }
 
                 /// <summary>
-                /// (alias old-name new-name)
+                /// (alias new-name old-name)
                 /// </summary>
                 public static SSObject Alias(SSExpression[] exps, SSScope scope)
                 {
-                    string oname = exps[0].Token.Value;
-                    string nname = exps[1].Token.Value;
+                    string nname = exps[0].Token.Value;
+                    string oname = exps[1].Token.Value;
                     (!oname.Equals(nname)).OrThrows("same name {0}".Fmt(oname));
                     try
                     {
@@ -61,19 +61,16 @@ namespace Slingshot
                     }
                 }
 
-                /// <summary>
-                /// (rename old-name new-name)
-                /// </summary>
-                public static SSObject Rename(SSExpression[] exps, SSScope scope)
+
+                public static SSObject Alias(SSExpression[] exps, SSScope scope)
                 {
-                    string oname = exps[0].Token.Value;
-                    string nname = exps[1].Token.Value;
+                    string nname = exps[0].Token.Value;
+                    string oname = exps[1].Token.Value;
                     (!oname.Equals(nname)).OrThrows("same name {0}".Fmt(oname));
                     try
                     {
                         var obj = scope.Find(oname);
                         scope.Define(nname, obj);
-                        scope.Undefine(oname);
                         return nname + "   " + obj.ToString();
                     }
                     catch (Exception)
@@ -82,30 +79,12 @@ namespace Slingshot
                         if (SSScope.BuiltinFunctions.TryGetValue(oname, out obj))
                         {
                             SSScope.BuiltinFunctions[nname] = obj;
-                            SSScope.BuiltinFunctions.Remove(oname);
                             return nname + "   " + obj.ToString();
                         }
                         throw new Exception("cannot find {0} in scope, and it is not a builtin".Fmt(nname));
                     }
                 }
 
-                public static SSObject Remove(SSExpression[] exps, SSScope scope)
-                {
-                    string oname = exps[0].Token.Value;
-                    try
-                    {
-                        var obj = scope.Remove(oname);
-                        return oname + "  removed  ";
-                    }
-                    catch (Exception)
-                    {
-                        if (SSScope.BuiltinFunctions.Remove(oname))
-                        {
-                            return oname + "  removed  ";
-                        }
-                        throw new Exception("cannot find {0} in scope, and it is not a builtin".Fmt(oname));
-                    }
-                }
 
                 /// <summary>
                 /// (rand)

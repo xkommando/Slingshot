@@ -94,16 +94,20 @@ namespace Slingshot
                     string oname = exps[0].Token.Value;
                     try
                     {
-                        var obj = scope.Remove(oname);
-                        return oname + "  removed  ";
+                        var obj = scope.Find(oname);
+                        scope.Undefine(oname);
+                        return oname + " removed  " + obj.ToString();
                     }
                     catch (Exception)
                     {
-                        if (SSScope.BuiltinFunctions.Remove(oname))
+                        Func<SSExpression[], SSScope, SSObject> obj = null;
+                        if (SSScope.BuiltinFunctions.TryGetValue(oname, out obj))
                         {
-                            return oname + "  removed  ";
+                            SSScope.BuiltinFunctions[nname] = obj;
+                            SSScope.BuiltinFunctions.Remove(oname);
+                            return nname + "   " + obj.ToString();
                         }
-                        throw new Exception("cannot find {0} in scope, and it is not a builtin".Fmt(oname));
+                        throw new Exception("cannot find {0} in scope, and it is not a builtin".Fmt(nname));
                     }
                 }
 
