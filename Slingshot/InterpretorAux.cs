@@ -107,10 +107,10 @@ namespace Slingshot
                     }
                     else
                     {
-                        return SSBool.NSFalse;
+                        return SSBool.False;
                     }
                 }
-                return SSBool.NSTrue;
+                return SSBool.True;
             }
 
             public static SSList RetrieveSList(this SSExpression[] expressions, SSScope scope, String operationName)

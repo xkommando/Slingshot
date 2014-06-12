@@ -6,7 +6,10 @@
 *.user
 *.sln.docstates
 $tf/
-
+*.qyi
+*.2c5
+*5w2
+*.pur
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

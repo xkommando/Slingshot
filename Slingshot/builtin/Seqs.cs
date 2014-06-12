@@ -15,7 +15,7 @@ namespace Slingshot
     {
         public partial struct Functions
         {
-            public struct Lists
+            public struct Seqs
             {
                 /// <summary>
                 /// (length a-list) || (length a-str)
@@ -52,15 +52,52 @@ namespace Slingshot
                     return new SSList(v.Val.Select(a => new SSChar(a)));
                 }
 
-                public static SSObject LsToStr(SSExpression[] exps, SSScope scope)
+                public static SSObject ToStr(SSExpression[] exps, SSScope scope)
                 {
                     (exps.Length == 1).OrThrows("expect one parameter");
-                    var ls = ((SSList)exps.Evaluate(scope).First());
-                    var sb = new StringBuilder(ls.Length * 5);
-                    ls.ForEach(a => sb.Append((SSChar)a));
-                    return sb.ToString();
+                    var v = exps.Evaluate(scope).First();
+                    if (v is SSList)
+                    {
+                        var ls = v as SSList;
+                        var sb = new StringBuilder(ls.Length*5);
+                        ls.ForEach(a => sb.Append((SSChar) a));
+                        return sb.ToString();
+                    }
+                    else if (v is SSString)
+                        return v;
+                    else
+                        return v.ToString();
                 }
 
+                public static SSObject ToInt(SSExpression[] exps, SSScope scope)
+                {
+                    (exps.Length == 1).OrThrows("expect one parameter");
+                    var ls = exps.Evaluate(scope).First();
+                    if (ls is SSString)
+                    {
+                        (ls as SSString).Val.Trim();
+                        return Int64.Parse((ls as SSString));
+                    }
+                    else if (ls is SSNumber)
+                        return (ls as SSNumber).IntVal();
+                    else
+                        throw new ArgumentException("expect string or ssnumber, get {0}".Fmt(ls.GetType()));
+                }
+
+                public static SSObject ToFloat(SSExpression[] exps, SSScope scope)
+                {
+                    (exps.Length == 1).OrThrows("expect one parameter");
+                    var ls = exps.Evaluate(scope).First();
+                    if (ls is SSString)
+                    {
+                        (ls as SSString).Val.Trim();
+                        return double.Parse((ls as SSString));
+                    }
+                    else if (ls is SSNumber)
+                        return (ls as SSNumber).FloatVal();
+                    else
+                        throw new ArgumentException("expect string or ssnumber, get {0}".Fmt(ls.GetType()));
+                }
                 /// <summary>
                 /// cons 
                 /// atom + list

@@ -52,7 +52,9 @@ namespace Slingshot
                 
                 {"list" , new CodeToken(TokenType.List, "list")},
                 {"True" , new CodeToken(TokenType.True, "True")},
-                {"False" , new CodeToken(TokenType.False, "False")}
+                {"False" , new CodeToken(TokenType.False, "False")},
+                {"continue" , new CodeToken(TokenType.Continue, "continue")},
+                {"break" , new CodeToken(TokenType.Break, "break")}
             };
 
             public static CodeToken Build(TokenType type, String value)

@@ -43,11 +43,19 @@ namespace Slingshot
                     //+ current.Children.Count);//+ "    " + current.Children[0].Token.Value);
                     switch (current.Token.Type)
                     {
-                        case TokenType.LeftCurlyBracket:
+                        case TokenType.LeftCurlyBracket:// {
                             SSObject ret = null;
-                            current.Children.ForEach(a => ret = a.Evaluate(scope));
+                            foreach (var exp in current.Children)
+                            {
+                                if (exp.Token.Type == TokenType.Continue)
+                                    break;
+                                else if (exp.Token.Type == TokenType.Break)
+                                    return SSSignal.Break;
+
+                                ret = exp.Evaluate(scope);
+                            }
                             return ret;
-                        case TokenType.LeftBracket:
+                        case TokenType.LeftBracket: // [
                             return new SSList(current.Children.Select(a => a.Evaluate(scope)));
                     }
                     if (current.Children.Count == 0)
@@ -66,9 +74,9 @@ namespace Slingshot
                                 return new SSChar(tok.Value[0]);
 
                             case TokenType.True:
-                                return SSBool.NSTrue;
+                                return SSBool.True;
                             case TokenType.False:
-                                return SSBool.NSFalse;
+                                return SSBool.False;
 
                             case TokenType.Identifier:
                                 return scope.Find(tok.Value);
@@ -105,7 +113,7 @@ namespace Slingshot
                           //  scope.Output.WriteLine( " ===== " + current.Children[0].Token.Value);
                             current.Children.ForEach(a => Console.WriteLine(a.Token.Value + "   "));
                             scope.Output.WriteLine(e);
-                            return SSBool.NSFalse;
+                            return SSBool.False;
                         }
 
 

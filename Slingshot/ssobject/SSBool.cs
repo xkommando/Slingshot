@@ -9,12 +9,12 @@ namespace Slingshot
     {
         public class SSBool : SSNumber
         {
-            public static readonly SSBool NSFalse = new SSBool();
-            public static readonly SSBool NSTrue = new SSBool();
+            public static readonly SSBool False = new SSBool();
+            public static readonly SSBool True = new SSBool();
 
             public override object Clone()
             {
-                return this ? NSTrue : NSFalse;
+                return this ? True : False;
             }
 
             public override String ToString()
@@ -43,7 +43,7 @@ namespace Slingshot
             }
             public static implicit operator Boolean(SSBool value)
             {
-                return value == SSBool.NSTrue;
+                return value == SSBool.True;
             }
 
             public static implicit operator SSInteger(SSBool value)
@@ -53,7 +53,7 @@ namespace Slingshot
 
             public static implicit operator SSBool(Boolean value)
             {
-                return value ? NSTrue : NSFalse;
+                return value ? True : False;
             }
 
 

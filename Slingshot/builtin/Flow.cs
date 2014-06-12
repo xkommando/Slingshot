@@ -56,7 +56,11 @@ namespace Slingshot
                     (exps.Length == 2).OrThrows("expect two parameters");
                     SSObject ret = null;
                     while ((SSBool) exps[0].Evaluate(scope))
+                    {
                         ret = exps[1].Evaluate(scope);
+                        if (ret == SSSignal.Break)
+                            break;
+                    }
                     return ret;
                 }
 
@@ -68,6 +72,8 @@ namespace Slingshot
                     while (num-- != 0)
                     {
                         ret = exps[1].Evaluate(scope);
+                        if (ret == SSSignal.Break)
+                            break;
                     }
                     return ret;
                 }

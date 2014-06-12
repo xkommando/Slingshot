@@ -95,6 +95,7 @@
     <Compile Include="ssobject\SSNumeric.cs" />
     <Compile Include="ssobject\SSBool.cs" />
     <Compile Include="ssobject\SSSet.cs" />
+    <Compile Include="ssobject\SSSignal.cs" />
     <Compile Include="ssobject\SSString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SSExpression.cs" />

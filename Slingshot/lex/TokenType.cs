@@ -68,6 +68,8 @@ namespace Slingshot
             BitOr,              // |
             BitOrAsign,         // |=
 
+            Break,
+            Continue,
             Identifier,
             //
             True,

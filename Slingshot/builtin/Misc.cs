@@ -107,6 +107,19 @@ namespace Slingshot
                     }
                 }
 
+                public static SSObject Swap(SSExpression[] exps, SSScope scope)
+                {
+                    var na = exps[0].Token.Value;
+                    var va = exps[0].Evaluate(scope);
+                    var nb = exps[1].Token.Value;
+                    var vb = exps[1].Evaluate(scope);
+                    scope.Undefine(nb);
+                    scope.Undefine(na);
+                    scope.Define(nb, va);
+                    scope.Define(na, vb);
+                    return true;
+                }
+
                 /// <summary>
                 /// (rand)
                 /// (rand 15) 

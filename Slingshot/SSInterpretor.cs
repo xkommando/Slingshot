@@ -47,6 +47,7 @@ namespace Slingshot
                    .BuildIn("alias", Functions.Misc.Alias)
                    .BuildIn("rename", Functions.Misc.Rename)
                    .BuildIn("remove", Functions.Misc.Remove)
+                   .BuildIn("swap", Functions.Misc.Swap)
 
                    // numeric
                    .BuildIn("+", Functions.Numbers.Add)
@@ -96,26 +97,28 @@ namespace Slingshot
                // list processing
                    .BuildIn("car", (nsargs, scope) => nsargs.RetrieveSList(scope, "car").First())
                    .BuildIn("cdr", (nsargs, scope) => new SSList(nsargs.RetrieveSList(scope, "cdr").Skip(1)))
-                   .BuildIn("cons", Functions.Lists.Cons)
+                   .BuildIn("cons", Functions.Seqs.Cons)
                    .BuildIn("list?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSList)
                    .BuildIn("char?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSChar)
                    .BuildIn("string?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSString)
                    .BuildIn("integer?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSInteger)
                    .BuildIn("float?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSFloat)
                    .BuildIn("dict?", (nsargs, scope) => nsargs[0].Evaluate(scope) is SSDict)
-                   .BuildIn("null?", Functions.Lists.IsNull)
+                   .BuildIn("null?", Functions.Seqs.IsNull)
 
                     // append atom + list || list + atom || list + list
-                   .BuildIn("append", Functions.Lists.Append)
-                   .BuildIn("pop-back!", Functions.Lists.Popback)
-                   .BuildIn("pop-front!", Functions.Lists.PopFront)
-                   .BuildIn("set-at!", Functions.Lists.SetAt)
-                   .BuildIn("elem-at", Functions.Lists.ElemAt)
+                   .BuildIn("append", Functions.Seqs.Append)
+                   .BuildIn("pop-back!", Functions.Seqs.Popback)
+                   .BuildIn("pop-front!", Functions.Seqs.PopFront)
+                   .BuildIn("set-at!", Functions.Seqs.SetAt)
+                   .BuildIn("elem-at", Functions.Seqs.ElemAt)
 
-                   .BuildIn("to-str", Functions.Lists.LsToStr)
-                   .BuildIn("to-list", Functions.Lists.StrToLs)
+                   .BuildIn("to-str", Functions.Seqs.ToStr)
+                   .BuildIn("to-int", Functions.Seqs.ToInt)
+                   .BuildIn("to-float", Functions.Seqs.ToFloat)
+                   .BuildIn("to-list", Functions.Seqs.StrToLs)
                     // (length a-list) || (length a-str)
-                   .BuildIn("length", Functions.Lists.Length)
+                   .BuildIn("length", Functions.Seqs.Length)
 
                    ;
 
