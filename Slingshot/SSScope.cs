@@ -49,8 +49,16 @@ namespace Slingshot
 
             public SSObject Define(String name, SSObject value)
             {
-                this.VariableTable.Add(name, value);
-                return value;
+                try
+                {
+                    this.VariableTable.Add(name, value);
+                    return value;
+                }
+                catch (Exception)
+                {
+                    Output.WriteLine("Redefinition of symbol {0} value {1}".Fmt(name, VariableTable[name]));
+                    return SSBool.False;
+                }
             }
 
             public SSObject Undefine(String name)

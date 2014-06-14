@@ -2,9 +2,24 @@
 (def math-E 2.71828182845905)
 
 
+(def less?
+	(func(a b)
+		(< a b)
+	)
+)
+(def greater?
+	(func(a b)
+		(> a b)
+	)
+)
+
+
 (def even?
 	(func(at)
-		(== (% at 2) 0)
+		(if(integer? at)
+			(== (% at 2) 0)
+			False
+		)
 	)
 )
 
@@ -17,25 +32,35 @@
 
 (def prime? 
 	(func(a)
-		(if(even? a)
-			False
-			{
-				(def d 3)
+		(if (or (not (integer? a)) 
+				(< a 1) 
+				(even? a) 
+			) False
+			{ 	(def d 3)
 				(def ret True)
 				{	(while (< (* d d) a)
-						{
-							(if (eq? 0 (% a d))
-								{
-									(set! d a)
-									(set! ret False)
-								}
-								(set! d (+ d 2))
-							)
-						}
+						(if (eq? 0 (% a d))
+							{ (debug d)
+								(set! ret False)
+								break
+							}
+							(set! d (+ d 2))
+						)
 					)
-					ret
+				ret
 				}
 			}
+		)
+	)
+)
+
+(def factorial
+	(func(a)
+		(if (or (== a 1)
+				(not (integer? a))
+			)
+			1
+			(* a (factorial (- a 1) ) )
 		)
 	)
 )

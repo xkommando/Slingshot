@@ -42,7 +42,7 @@
 			0
 			{	(def _len (length ls))
 			(def _mul-sum (mul-list ls))
-			(** _mul-sum (/ 1 _len))	
+			(** _mul-sum (/ 1 _len))
 			}
 		)
 	)
@@ -93,6 +93,40 @@
 						(** _avg 2) )
 				0.5)
 			}
+		)
+	)
+)
+
+// find the max/min value in a list
+(def peak-of
+	(func(ls compare)
+	{
+		(def _f(func(_at _ls)
+				(if (null? _ls)
+					_at
+					(if(compare _at (car _ls))
+						(_f _at (cdr _ls))
+						(_f (car _ls) (cdr _ls))
+					)
+				)
+			)
+		)
+		(if (null? ls)
+			False
+			(_f (car ls) (cdr ls))
+		)
+	}
+	)
+)
+
+(def count-if
+	(func(ls init pred?)
+		(if (null? ls)
+			init
+			(if (pred? (car ls))
+				(count-if (cdr ls) (+ init 1) pred?)
+				(count-if (cdr ls) init pred?)
+			)
 		)
 	)
 )

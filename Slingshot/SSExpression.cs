@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Slingshot.Interpretor;
 using Slingshot.Objects;
 using Slingshot.BuiltIn;
 
@@ -35,32 +36,29 @@ namespace Slingshot
             public SSObject Evaluate(SSScope scope)
             {
                 var current = this;
-                while(true)
+                while (true)
                 {
                     var tok = current.Token;
-
-                    //Console.WriteLine("=====>>>>" + tok.Value + "  " 
-                    //+ current.Children.Count);//+ "    " + current.Children[0].Token.Value);
-                    switch (current.Token.Type)
+                    try
                     {
-                        case TokenType.LeftCurlyBracket:// {
-                            SSObject ret = null;
-                            foreach (var exp in current.Children)
-                            {
-                                if (exp.Token.Type == TokenType.Continue)
-                                    break;
-                                else if (exp.Token.Type == TokenType.Break)
-                                    return SSSignal.Break;
-
-                                ret = exp.Evaluate(scope);
-                            }
-                            return ret;
-                        case TokenType.LeftBracket: // [
-                            return new SSList(current.Children.Select(a => a.Evaluate(scope)));
-                    }
-                    if (current.Children.Count == 0)
-                        switch (tok.Type)
+                        switch (current.Token.Type)
                         {
+                            case TokenType.LeftCurlyBracket:// {
+                                SSObject ret = null;
+                                foreach (var exp in current.Children)
+                                {
+                                    if (exp.Token.Type == TokenType.Continue)
+                                        break;
+                                    else if (exp.Token.Type == TokenType.Break)
+                                        return SSSignal.Break;
+
+                                    ret = exp.Evaluate(scope);
+                                }
+                                return ret;
+
+                            case TokenType.LeftBracket: // [
+                                return new SSList(current.Children.Select(a => a.Evaluate(scope)));
+
                             case TokenType.Integer:
                                 return Int64.Parse(tok.Value);
 
@@ -80,43 +78,56 @@ namespace Slingshot
 
                             case TokenType.Identifier:
                                 return scope.Find(tok.Value);
+                            default:
+
+                                var first = current.Children[0];
+                                tok = first.Token;
+
+                                Func<SSExpression[], SSScope, SSObject> func;
+                                SSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);
+                                if (func != null)
+                                {
+                                    var arguments = current.Children.Skip(1).ToArray();
+                                    return func(arguments, scope);
+                                }
+                                SSFunction function = tok.Type == TokenType.LeftParentheses ?
+                                                    (SSFunction)first.Evaluate(scope)
+                                                    : (SSFunction)scope.Find(tok.Value);
+
+                                var args = current.Children.Skip(1).Select(s => s.Evaluate(scope)).ToArray();
+                                SSFunction newFunction = function.Update(args);
+                                if (newFunction.IsPartial())
+                                {
+                                    return newFunction.Evaluate();
+                                }
+                                current = newFunction.Body;
+                                scope = newFunction.Scope;
+                                break;
                         }
-                    else
+                    }
+                    catch (Exception e)
                     {
-                        var first = current.Children[0];
-                        tok = first.Token;
-      
-                        Func<SSExpression[], SSScope, SSObject> func;
-                        SSScope.BuiltinFunctions.TryGetValue(tok.Value, out func);
-                        if (func != null)
+                        var c = current;
+                        var ct = 3;
+                        while (ct-- != 0 && c.Parent != null)
                         {
-                            var arguments = current.Children.Skip(1).ToArray();
-                            return func(arguments, scope);
+                            c = c.Parent;
                         }
-                        try
+                        var cc = ConsoleColor.Green;
+                        if (scope.Output == Console.Out)
                         {
-                            SSFunction function = tok.Type == TokenType.LeftParentheses ?
-                                                (SSFunction)first.Evaluate(scope)
-                                                : (SSFunction)scope.Find(tok.Value);
-
-                            var args = current.Children.Skip(1).Select(s => s.Evaluate(scope)).ToArray();
-                            SSFunction newFunction = function.Update(args);
-                            if (newFunction.IsPartial())
-                            {
-                                return newFunction.Evaluate();
-                            }
-                            current = newFunction.Body;
-                            scope = newFunction.Scope;
+                           cc =  Console.ForegroundColor;
+                           Console.ForegroundColor = ConsoleColor.Red;
                         }
-                        catch(Exception e)
+                     //   c.Print(scope.Output);
+                        scope.Output.WriteLine();
+                        Console.WriteLine(e);
+                        Console.WriteLine(e.StackTrace);
+                        if (scope.Output == Console.Out)
                         {
-                          //  scope.Output.WriteLine( " ===== " + current.Children[0].Token.Value);
-                            current.Children.ForEach(a => Console.WriteLine(a.Token.Value + "   "));
-                            scope.Output.WriteLine(e);
-                            return SSBool.False;
+                            Console.ForegroundColor = cc;
                         }
-
-
+                        throw e;
                     }
                 }
             }

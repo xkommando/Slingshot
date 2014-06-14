@@ -47,18 +47,6 @@
 )
 
 
-(def less?
-	(func(a b)
-		(< a b)
-	)
-)
-(def greater?
-	(func(a b)
-		(> a b)
-	)
-)
-
-
 (def gen-list
 	(func(ls f len)
 		(if (== 0 len)

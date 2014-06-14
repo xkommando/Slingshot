@@ -89,14 +89,15 @@
     <Compile Include="SSInterpretor.cs" />
     <Compile Include="ssobject\io\SSFile.cs" />
     <Compile Include="ssobject\io\Stream.cs" />
+    <Compile Include="ssobject\regex\SSRegPattern.cs" />
     <Compile Include="ssobject\SSChar.cs" />
-    <Compile Include="ssobject\SSDict.cs" />
-    <Compile Include="ssobject\SSList.cs" />
+    <Compile Include="ssobject\container\SSDict.cs" />
+    <Compile Include="ssobject\container\SSList.cs" />
     <Compile Include="ssobject\SSNumeric.cs" />
     <Compile Include="ssobject\SSBool.cs" />
-    <Compile Include="ssobject\SSSet.cs" />
+    <Compile Include="ssobject\container\SSSet.cs" />
     <Compile Include="ssobject\SSSignal.cs" />
-    <Compile Include="ssobject\SSString.cs" />
+    <Compile Include="ssobject\container\SSString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SSExpression.cs" />
     <Compile Include="ssobject\SSFunction.cs" />
@@ -128,6 +129,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

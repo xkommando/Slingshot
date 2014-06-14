@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Slingshot.Compiler;
 using Slingshot.Objects;
 using Slingshot.BuiltIn;
@@ -11,13 +12,33 @@ namespace Slingshot
     namespace Interpretor
     {
 
+
         class SSInterpretor
         {
+
+            public static int bs(int left, int right, int[] ls, int v)
+            {
+                if (right - left < 2)
+                    return -1;
+                var m = (left + right)/2;
+                if (ls[m] < v)
+                    return bs(m, right, ls, v);
+                else if (ls[m] > v)
+                    return bs(left, m, ls, v);
+                else
+                    return m;
+            }
+
+
             public static void Main(string[] args)
             {
+                int v = 5;
+                int[] ls = {1, 2, 8, 9, 4, 6};
+                Console.WriteLine(bs(0, ls.Length, ls, v));
+
                 //Console.WriteLine(SSScope.BuiltinFunctions.Count);// 64
                 GLOBAL_SCOPE
-                    .LoadLib("basic.ss")
+                   .LoadLib("basic.ss")
                    .LoadLib("algo.ss")
                    .LoadLib("math.ss")
                    .LoadLib("statistic.ss")
@@ -38,7 +59,7 @@ namespace Slingshot
                    .BuildIn("error", Functions.Flow.Error)
 
             // misc functions
-                   .BuildIn("test", Functions.Misc.Test)
+                   .BuildIn("debug", Functions.Misc.Debug)
                    .BuildIn("rand", Functions.Misc.Rand)
                    .BuildIn("hash", Functions.Misc.Hash)
                    .BuildIn("clone", (nsargs, scope) =>

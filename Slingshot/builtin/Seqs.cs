@@ -75,8 +75,7 @@ namespace Slingshot
                     var ls = exps.Evaluate(scope).First();
                     if (ls is SSString)
                     {
-                        (ls as SSString).Val.Trim();
-                        return Int64.Parse((ls as SSString));
+                        return Int64.Parse((ls as SSString).Val.Trim());
                     }
                     else if (ls is SSNumber)
                         return (ls as SSNumber).IntVal();
@@ -90,8 +89,7 @@ namespace Slingshot
                     var ls = exps.Evaluate(scope).First();
                     if (ls is SSString)
                     {
-                        (ls as SSString).Val.Trim();
-                        return double.Parse((ls as SSString));
+                        return double.Parse((ls as SSString).Val.Trim());
                     }
                     else if (ls is SSNumber)
                         return (ls as SSNumber).FloatVal();
@@ -230,8 +228,8 @@ namespace Slingshot
                 {
                     (exps.Length == 2).OrThrows("Expect a list and an integer ");
 
-                    var idx = exps[1].Evaluate(scope);
                     var ret = exps[0].Evaluate(scope);
+                    var idx = exps[1].Evaluate(scope);
                     if (ret is SSList)
                         return ((SSList)ret)[(SSInteger)idx];
                     else if (ret is SSString)

@@ -56,27 +56,71 @@
 	)
 )
 
+// asc order
+(def q-sort
+	(func(ls)
+		(if (or (null? ls) (== (length ls) 1))
+			ls
+			{ (def _pivot (car ls) )
+				(def _left (filter  (func(a)(< a _pivot))  ls ) )
+				(def _right (filter  (func(a)(< _pivot a)) ls ) )
+				(append (append (q-sort _left) _pivot)
+							(q-sort _right)
+				)
+			}
+		)
+	)
+)
+
 
 (def qsort
-	(func(ls)
-		(if(null? ls)
+	(func(ls compare)
+		(if (or (null? ls) (== (length ls) 1) )
 			ls
-			(if(== (length ls) 1)
-				ls
-				{ (def _pivot (car ls) )
-					(def _left (filter  (func(a)(< a _pivot))  ls ) )
-					(def _right (filter  (func(a)(< _pivot a)) ls ) )
-					(append (append (qsort _left) _pivot)
-							(qsort _right)
+			{ (def _pivot (car ls) )
+				(def _left (filter  (func(a)(compare a _pivot))  ls ) )
+				(def _right (filter  (func(a)(compare _pivot a)) ls ) )
+				(append (append (qsort _left compare) _pivot)
+							(qsort _right compare)
+				)
+			}
+		)
+	)
+)
+
+// return integer -1 if search failed 
+(def bin-search
+	(func(ls val)
+		(if(null? ls)
+			-1
+			{
+				(def _f(func(_min_idx _max_idx)
+					(if (< (- _max_idx _min_idx) 2)
+						-1
+						{
+							(def _m (to-int (/ (+ _max_idx _min_idx) 2)))
+							//(debug _m (elem-at ls _m))
+							(if (< (elem-at ls _m) val)
+								(_f _m _max_idx)
+								(if (< val (elem-at ls _m))
+									(_f _min_idx _m)
+									_m
+									)
+								)
+						}
+						)
 					)
-				}
-			)
+				)
+				(_f 0 (length ls))
+			}
 		)
 	)
 )
 
 
 
+
+//-------------------------------------------------------------------------------------------------
 // predefined vars for testing
 
 (def lslen (func(ls)(length ls)))
@@ -126,5 +170,26 @@
 		)
 	)
 
+	)
+)
+
+(def val 5)
+(def ls p-ls1)
+
+(def _f(func(_min_idx _max_idx)
+	(if (< (- _max_idx _min_idx) 2)
+		-1
+		{
+			(def _m (to-int (/ (+ _max_idx _min_idx) 2)))
+			(debug _m (elem-at ls _m))
+			(if (< (elem-at ls _m) val)
+				(_f _m _max_idx)
+				(if (< val (elem-at ls _m))
+					(_f _left _m)
+					_m
+					)
+				)
+		}
+		)
 	)
 )

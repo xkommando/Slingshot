@@ -16,23 +16,26 @@ namespace Slingshot
                 /// <summary>
                 /// (test to-print to-eval )
                 /// </summary>
-                public static SSObject Test(SSExpression[] exps, SSScope scope)
+                public static SSObject Debug(SSExpression[] exps, SSScope scope)
                 {
                     var ret = exps.Evaluate(scope);
                     var oput = scope.Output;
-                    scope.Output.WriteLine("----- LOG -----");
-                    if (exps.Length > 0)
+                    oput.WriteLine(" ---> Debug {0}".Fmt(DateTime.Now.ToString("h:mm:ss")));
+                    exps.ForEach(a =>
                     {
-                        var exp = exps[0];
-                        if (exp.Parent != null)
-                            oput.WriteLine(exp.Parent.Token.Value);
-                        oput.WriteLine("\t" + exp.Token.Value);
-                        exp.Children.ForEach(a => oput.Write(a.Token.Value + "   "));
-                    }
-                    oput.WriteLine();
-                    ret.ForEach(a => oput.Write("   " + a.ToString()));
-                    oput.WriteLine();
-                    return "---------------";
+                        oput.Write(a.Evaluate(scope));
+                        oput.Write("    ");
+                        //var c = a;
+                        //var ct = 4;
+                        //while (ct-- != 0 && c.Parent != null)
+                        //{
+                        //    c = c.Parent;
+                        //}
+                        //c.Print(scope.Output);
+                        //scope.Output.WriteLine();
+                    });
+                    oput.WriteLine("---------------");
+                    return "";
                 }
 
                 /// <summary>

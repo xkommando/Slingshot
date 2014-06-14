@@ -7,7 +7,6 @@ namespace Slingshot.BuiltIn
 {
     public partial struct Functions
     {
-
         public struct RegEx
         {
         }
