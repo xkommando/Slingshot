@@ -16,45 +16,54 @@ namespace Slingshot
         /// </summary>
         public static class InterpretorAux
         {
-
             public static SSScope LoadLib(this SSScope scope, string lib)
             {
                 scope.Output.WriteLine(">>> Loading Library [{0}] ...".Fmt(lib));
                 using (var sr = new StreamReader(lib))
                 {
-                    string code;
-                    var file = new CodeFile();
-                    var syntax = new SyntaxAnalyzer();
+                    string code = null;
                     if ((code = sr.ReadToEnd()).NotEmpty())
                     {
-                        file.SourceCode = code;
-                        syntax.Take(file);
-                        if (syntax.ErrorList.Count > 0)
-                        {
-                            scope.Output.WriteLine("Errors:");
-                            syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a));
-                            return scope;
-                        }
-                        try
-                        {
-                            // prevent lazy eval
-                            foreach (var exp in syntax.Expressions)
-                                exp.Evaluate(scope);
-                        }//
-                        catch (Exception ex)
-                        {
-                            scope.Output.WriteLine("Failed to Load library[{0}]".Fmt(lib));
-                            scope.Output.WriteLine(ex);
-                            ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
-                        }
-                    //    scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
-                     //       .Fmt(a.Key, a.Value.GetType())));
+                        scope.BulkEval(code);
                     }
                 }
                 return scope;
             }
 
+            public static void BulkEval(this SSScope scope, string src)
+            {
+                if (src.NotEmpty())
+                {
+                    var file = new CodeFile();
+                    var syntax = new SyntaxAnalyzer();
+                    file.SourceCode = src;
+                    syntax.Take(file);
+                    if (syntax.ErrorList.Count > 0)
+                    {
+                        scope.Output.WriteLine("Errors:");
+                        syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a));
+                    }
+                    try
+                    {
+                        // prevent lazy eval
+                        foreach (var exp in syntax.Expressions)
+                            exp.Evaluate(scope);
+                    }//
+                    catch (Exception ex)
+                    {
+                        scope.Output.WriteLine("Failed to evaluate");
+                        scope.Output.WriteLine(ex);
+                        ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
+                    }
+                    //    scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
+                    //       .Fmt(a.Key, a.Value.GetType())));
+                }
+            }
 
+            public static SSObject Cmd(this SSScope scope, List<SSExpression> exps)
+            {
+                return true;
+            }
             public static void InterpretingInConsole(this SSScope scope)
             {
                 var w = new Stopwatch();

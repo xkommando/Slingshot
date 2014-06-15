@@ -39,13 +39,14 @@ namespace Slingshot
 
             public static readonly Dictionary<string, CodeToken> KEY_WORDS = new Dictionary<string, CodeToken> 
             {
+                {"slingshot" , new CodeToken(TokenType.Slingshot, "slingshot")},
                 {"def" , new CodeToken(TokenType.Def, "def")},
                 {"undef" , new CodeToken(TokenType.UnDef, "undef")},
 
                 {"func" , new CodeToken(TokenType.Func, "func")},
 
                 {"if" , new CodeToken(TokenType.If, "if")},
-                {"?" , new CodeToken(TokenType.QMark, "?")},
+             //   {"?" , new CodeToken(TokenType.QMark, "?")},
                 
               //  {"begin" , new CodeToken(TokenType.Begin, "begin")},
                 {":" , new CodeToken(TokenType.Colon, ":")},

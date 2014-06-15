@@ -6,6 +6,7 @@ namespace Slingshot
 
         public enum TokenType
         {
+            Slingshot,
             Integer,
             Float,
             SciNumber,

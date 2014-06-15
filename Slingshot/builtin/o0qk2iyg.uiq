@@ -26,14 +26,14 @@ namespace Slingshot
                 public static SSObject ReadStr(SSExpression[] exps, SSScope scope)
                 {
                     (exps.Length == 1).OrThrows("expect one file");
-                    return (exps[0].Evaluate(scope) as SSFile).ReadStr();
+                    return (exps[0].Evaluate(scope) as SSFile).readStr();
                 }
 
                 public static SSObject Load(SSExpression[] exps, SSScope scope)
                 {
+
                     (exps.Length == 1).OrThrows("expect one string");
-                    scope.BulkEval(exps[0].Evaluate(scope) as SSString);
-                    return "loaded";
+                    scope.LoadLib(exps[0].Evaluate(scope) as SSString);
                 }
 
                 public static SSObject ReLoad(SSExpression[] exps, SSScope scope)

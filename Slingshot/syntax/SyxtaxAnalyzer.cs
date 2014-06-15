@@ -25,7 +25,10 @@ namespace Slingshot
             {
                 src.Parse();
                 if (src.ErrorList.Count > 0)
+                {
+                    this.ErrorList = src.ErrorList;
                     return;
+                }
 
                 this.TokenList = src.TokenList;
                 this.Parse();

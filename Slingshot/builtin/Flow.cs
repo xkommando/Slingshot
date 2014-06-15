@@ -21,6 +21,11 @@ namespace Slingshot
                     return scope.Undefine(exps[0].Token.Value);
                 }
 
+                public static SSObject ClearScope(SSExpression[] exps, SSScope scope)
+                {
+                    scope.VariableTable.Clear();
+                    return true;
+                }
                 /// <summary>
                 /// set scope
                 /// </summary>

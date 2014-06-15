@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,27 +16,8 @@ namespace Slingshot
 
         class SSInterpretor
         {
-
-            public static int bs(int left, int right, int[] ls, int v)
-            {
-                if (right - left < 2)
-                    return -1;
-                var m = (left + right)/2;
-                if (ls[m] < v)
-                    return bs(m, right, ls, v);
-                else if (ls[m] > v)
-                    return bs(left, m, ls, v);
-                else
-                    return m;
-            }
-
-
             public static void Main(string[] args)
             {
-                int v = 5;
-                int[] ls = {1, 2, 8, 9, 4, 6};
-                Console.WriteLine(bs(0, ls.Length, ls, v));
-
                 //Console.WriteLine(SSScope.BuiltinFunctions.Count);// 64
                 GLOBAL_SCOPE
                    .LoadLib("basic.ss")
@@ -49,6 +31,7 @@ namespace Slingshot
             // control flow
                    .BuildIn("def", Functions.Flow.Def)
                    .BuildIn("undef", Functions.Flow.Undef)
+                   .BuildIn("clear-scope", Functions.Flow.ClearScope)
                    .BuildIn("set!", Functions.Flow.Set)
                    .BuildIn("func", Functions.Flow.Func)
                    .BuildIn("if", Functions.Flow.If)
@@ -58,6 +41,9 @@ namespace Slingshot
                    .BuildIn("try", Functions.Flow.TryCatch)
                    .BuildIn("error", Functions.Flow.Error)
 
+                   .BuildIn("open-file", Functions.IO.OpenFile)
+                   .BuildIn("read-str", Functions.IO.ReadStr)
+                   .BuildIn("load", Functions.IO.Load)
             // misc functions
                    .BuildIn("debug", Functions.Misc.Debug)
                    .BuildIn("rand", Functions.Misc.Rand)

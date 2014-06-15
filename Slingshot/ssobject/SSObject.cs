@@ -36,6 +36,11 @@ namespace Slingshot
                 return (SSChar)value;
             }
 
+            //public static implicit operator SSFile(string s)
+            //{
+            //    return 
+            //}
+
             public abstract bool Eq(SSObject obj);
             public abstract bool Replace(SSObject other);
             public abstract object Clone();

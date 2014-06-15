@@ -14,6 +14,8 @@ namespace Slingshot
         {
             public readonly TextWriter Output;
             public readonly Random Rand;
+
+
             public SSScope Parent { get; private set; }
             public Dictionary<string, SSObject> VariableTable { get; private set; }
 
@@ -22,7 +24,7 @@ namespace Slingshot
                 this.Parent = parent;
                 this.VariableTable = new Dictionary<string, SSObject>(32);
 
-                this.Output = parent == null ? null : parent.Output;
+                this.Output = parent == null ? Console.Out : parent.Output;
                 this.Output = Output ?? Console.Out;
                 this.Rand = parent == null ? null : parent.Rand;
                 this.Rand = Rand ?? new Random();
