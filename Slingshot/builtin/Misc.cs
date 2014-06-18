@@ -20,7 +20,7 @@ namespace Slingshot
                 {
                     var ret = exps.Evaluate(scope);
                     var oput = scope.Output;
-                    oput.WriteLine(" ---> Debug {0}".Fmt(DateTime.Now.ToString("h:mm:ss")));
+                    oput.WriteLine("------------------------------");
                     exps.ForEach(a =>
                     {
                         oput.Write(a.Evaluate(scope));
@@ -34,8 +34,7 @@ namespace Slingshot
                         //c.Print(scope.Output);
                         //scope.Output.WriteLine();
                     });
-                    oput.WriteLine("---------------");
-                    return "";
+                    return "\r\n------- Debug {0} -------".Fmt(DateTime.Now.ToString("h:mm:ss"));
                 }
 
                 /// <summary>

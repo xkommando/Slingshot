@@ -95,7 +95,7 @@ namespace Slingshot
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ex);
+                        Console.WriteLine(ex.Message);
                         Console.WriteLine(ex.StackTrace);
                        // ex.StackTrace.Split("at".ToCharArray()).Take(3).ForEach(a => scope.Output.WriteLine(a));
                     }
@@ -136,9 +136,21 @@ namespace Slingshot
             //    String[] tokens = text.Replace("(", " ( ").Replace(")", " ) ").Split(" \t\r\n".ToArray(), StringSplitOptions.RemoveEmptyEntries);
             //    return tokens;
             //}
-
             public static void Print(this SSExpression exp, TextWriter writer)
             {
+                var ct = 3;
+                while (ct-- != 0 && exp.Parent != null)
+                {
+                    exp = exp.Parent;
+                }
+                DoPrint(exp, writer, 5);
+            }
+
+            public static void DoPrint(this SSExpression exp, TextWriter writer, int threshold)
+            {
+                if (threshold < 0)
+                    return;
+
                 if (exp.Token != null)
                 {
                     if (exp.Token.Type == TokenType.LeftBracket
@@ -148,7 +160,7 @@ namespace Slingshot
                     else
                         writer.Write(exp.Token.Value + "  ");
                 }
-                exp.Children.ForEach(a=>a.Print(writer));
+                exp.Children.ForEach(a=>a.DoPrint(writer, --threshold));
             }
 
         }

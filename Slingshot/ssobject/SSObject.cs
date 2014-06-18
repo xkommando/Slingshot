@@ -9,6 +9,7 @@ namespace Slingshot
 {
     namespace Objects
     {
+        [Serializable]
         public abstract class SSObject : ICloneable
         {
             public static implicit operator SSObject(Int64 value)

@@ -1,4 +1,5 @@
 ﻿// 				Slingshot Standard Library
+//					Algorithm Library
 // 					version 0.3
 // 				Copyright 2014  Cai Bowen
 
@@ -21,7 +22,6 @@
 			ls
 			(if (pred? (car ls))
 				(cons (car ls) (filter pred? (cdr ls)))
-			
 				(filter pred? (cdr ls))
 			)
 		)
@@ -57,6 +57,8 @@
 )
 
 // asc order
+
+(require filter append)
 (def q-sort
 	(func(ls)
 		(if (or (null? ls) (== (length ls) 1))
@@ -73,6 +75,7 @@
 )
 
 
+(require filter append)
 (def qsort
 	(func(ls compare)
 		(if (or (null? ls) (== (length ls) 1) )
@@ -88,6 +91,7 @@
 	)
 )
 
+(require elem-at)
 // return integer -1 if search failed 
 (def bin-search
 	(func(ls val)
@@ -116,8 +120,6 @@
 		)
 	)
 )
-
-
 
 
 //-------------------------------------------------------------------------------------------------

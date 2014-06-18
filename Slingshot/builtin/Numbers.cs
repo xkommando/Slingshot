@@ -85,70 +85,16 @@ namespace Slingshot.BuiltIn
                 return -0.0000001 < db && db < 0.0000001 ? i : db * i;
             }
 
-            public static SSObject Mod(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
-                var two = exps.Evaluate<SSInteger>(scope).ToArray();
-
-                return two[0] % two[1];
-            }
-
-            public static SSObject Log(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
-                var two = exps.Evaluate<SSNumber>(scope).ToArray();
-
-                return Math.Log(two[1].FloatVal(), two[0].FloatVal());
-            }
-
             public static SSObject Abs(SSExpression[] exps, SSScope scope)
             {
                 //(exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
                 var ret = exps.Evaluate(scope).First();
                 if (ret is SSFloat)
-                    return Math.Abs((SSFloat) ret);
+                    return Math.Abs((SSFloat)ret);
                 else
                     return Math.Abs((SSInteger)ret);
                 //return ret is SSFloat ? Math.Abs((SSFloat)ret) : Math.Abs((SSInteger)ret);
             }
-
-            public static SSObject Exp(SSExpression[] exps, SSScope scope)
-            {
-                //(exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
-                var ret = (SSNumber)exps.Evaluate(scope).First();
-                return Math.Exp(ret.FloatVal());
-            }
-
-
-            public static SSObject Sin(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
-                return Math.Cos((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
-            }
-            public static SSObject Cos(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
-                return Math.Sin((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
-            }
-            public static SSObject Tan(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 1).OrThrows("expect 1 parameters, get " + exps.Length);
-                return Math.Tan((exps[0].Evaluate(scope) as SSNumber).FloatVal() * Math.PI / 180);
-            }
-            public static SSObject Eq(SSExpression[] exps, SSScope scope)
-            {
-                (exps.Length == 2).OrThrows("expect 2 parameters, get " + exps.Length);
-                var nums = exps.Select(o => o.Evaluate(scope)).ToArray();
-                return nums[0].Eq(nums[1]);
-            }
-            //// ++
-            //public static SSObject Dec(SSExpression[] exps, SSScope scope)
-            //{
-            //}
-            ////--
-            //public static SSObject Inc(SSExpression[] exps, SSScope scope)
-            //{
-            //}
         }
 
     }

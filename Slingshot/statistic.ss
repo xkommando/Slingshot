@@ -1,4 +1,5 @@
 // 				Slingshot Standard Library
+//					Statistic library
 // 					version 0.3
 // 				Copyright 2014  Cai Bowen
 
@@ -11,6 +12,14 @@
 	)
 )
 
+(def mul-list
+	(func(ls)
+		(if(null? ls)
+			1
+			(* (car ls) (mul-list (cdr ls)))
+		)
+	)
+)
 
 
 (def avg
@@ -22,15 +31,6 @@
 			(/ _total _count)
 			}
 			
-		)
-	)
-)
-
-(def mul-list
-	(func(ls)
-		(if(null? ls)
-			1
-			(* (car ls) (mul-list (cdr ls)))
 		)
 	)
 )
@@ -64,6 +64,7 @@
 // )
 
 // optimized
+(require map avg length)
 (def variance
 	(func(ls)
 		(if(null? ls)
@@ -71,9 +72,9 @@
 			{
 				(def _avg (avg ls))
 				(def _len (length ls))
-			( / 	(- (sum (map (func(a)(** a 2)) ls) )
+				( / 	(- (sum (map (func(a)(** a 2)) ls) )
 						(* _len (** _avg 2))
-					) 
+					)
 				_len)
 			}
 		)
@@ -119,13 +120,13 @@
 	)
 )
 
-(def count-if
+(def count
 	(func(ls init pred?)
 		(if (null? ls)
 			init
 			(if (pred? (car ls))
-				(count-if (cdr ls) (+ init 1) pred?)
-				(count-if (cdr ls) init pred?)
+				(count (cdr ls) (+ init 1) pred?)
+				(count (cdr ls) init pred?)
 			)
 		)
 	)

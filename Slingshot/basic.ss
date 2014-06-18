@@ -1,4 +1,5 @@
 // 				Slingshot Standard Library
+//					Basic Library
 // 					version 0.3
 // 				Copyright 2014  Cai Bowen
 

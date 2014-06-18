@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Slingshot.Objects;
 using Slingshot.Compiler;
@@ -11,29 +12,45 @@ namespace Slingshot
         {
             public struct Flow
             {
-                public static SSObject Def(SSExpression[] exps, SSScope scope)
+                /// <summary>
+                /// return a list of all undefined symbols
+                /// or true if all symbols are defined
+                /// </summary>
+                public static SSObject Defined(SSExpression[] exps, SSScope scope)
                 {
-                    return scope.Define(exps[0].Token.Value, exps[1].Evaluate(scope));
+                    var ls = new List<SSObject>(6);
+                    exps.ForEach(a =>
+                    {
+                        var name = a.Token.Value;
+                        if (!scope.VariableTable.ContainsKey(name) && !SSScope.BuiltinFunctions.ContainsKey(name))
+                        {
+                            ls.Add(name);
+                        }
+                    });
+                    if (ls.Count > 0)
+                        return new SSList(ls);
+                    else
+                        return true;
                 }
 
-                public static SSObject Undef(SSExpression[] exps, SSScope scope)
+                public static SSObject Require(SSExpression[] exps, SSScope scope)
                 {
-                    return scope.Undefine(exps[0].Token.Value);
-                }
-
-                public static SSObject ClearScope(SSExpression[] exps, SSScope scope)
-                {
-                    scope.VariableTable.Clear();
+                    exps.ForEach(a =>
+                    {
+                        var name = a.Token.Value;
+                        if (!scope.VariableTable.ContainsKey(name) && !SSScope.BuiltinFunctions.ContainsKey(name))
+                            throw new KeyNotFoundException("cannot find [{0}] in local scope and global scope".Fmt(name));
+                    });
                     return true;
                 }
                 /// <summary>
-                /// set scope
+                /// set name value
                 /// </summary>
-                public static SSObject Set(SSExpression[] args, SSScope scope)
+                public static SSObject Set(SSExpression[] exps, SSScope scope)
                 {
-                    (args.Length == 2).OrThrows("expect two parameters");
-                    var b0 = args[0];
-                    var b1 = args[1].Evaluate(scope);
+                    (exps.Length == 2).OrThrows("expect two parameters");
+                    var b0 = exps[0];
+                    var b1 = exps[1].Evaluate(scope);
                     if (!b0.Evaluate(scope).Replace(b1))
                     {
                         scope.Undefine(b0.Token.Value);

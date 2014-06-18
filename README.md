@@ -21,7 +21,7 @@ Example From the Standard Library
 			(op (car ls) (reduce init op (cdr ls)) )
 		)))
 ```
-Algorithem Library
+Algorithem Library example
 ``` Lisp
 (def qsort
 	(func(ls compare)
@@ -55,12 +55,12 @@ Algorithem Library
 				(_f 0 (length ls))
 			})))
 ```
-Mathematics and Statistics Library
+Mathematics and Statistics Library example
 ```Lisp
 (def prime? 
 	(func(a)
 		(if (or (not (integer? a)) 
-				(< a 1) 
+				(< a 2) 
 				(even? a) 
 			) False
 			{ 	(def d 3)

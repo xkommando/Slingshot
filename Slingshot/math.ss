@@ -1,3 +1,8 @@
+// 				Slingshot Standard Library
+//					Mathematical  library
+// 					version 0.3
+// 				Copyright 2014  Cai Bowen
+
 (def math-PI 3.14159265358979)
 (def math-E 2.71828182845905)
 
@@ -7,6 +12,7 @@
 		(< a b)
 	)
 )
+
 (def greater?
 	(func(a b)
 		(> a b)
@@ -29,18 +35,19 @@
 	)
 )
 
+(require while set! even? integer?)
 
 (def prime? 
 	(func(a)
 		(if (or (not (integer? a)) 
-				(< a 1) 
+				(< a 2) 
 				(even? a) 
 			) False
 			{ 	(def d 3)
 				(def ret True)
 				{	(while (< (* d d) a)
 						(if (eq? 0 (% a d))
-							{ (debug d)
+							{ //(debug d)
 								(set! ret False)
 								break
 							}
@@ -49,6 +56,28 @@
 					)
 				ret
 				}
+			}
+		)
+	)
+)
+
+(def r-prime? 
+	(func(a)
+		(if (or (not (integer? a)) 
+				(< a 2)
+				(even? a)
+			) False
+			{(def _f (func(b)
+						(if (< a (* b b))
+							True
+							(if  (== 0 (% a b))
+								False
+								(_f (+ b 2))
+							)
+						)
+					)
+			)
+			(_f 3)
 			}
 		)
 	)
@@ -64,6 +93,8 @@
 		)
 	)
 )
+
+(require tan sin cos)
 
 (def cot 
 	(func(a)
@@ -82,3 +113,6 @@
 		(/ 1 (sin a))
 	)
 )
+
+// next premature
+//

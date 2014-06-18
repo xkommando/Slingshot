@@ -15,7 +15,7 @@ namespace Slingshot
 
         public class SSInteger : SSNumber
         {
-            public Int64 Val { get; private set; }
+            public Int64 Val { get; set; }
 
             public SSInteger(Int64 valInt)
             {

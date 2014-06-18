@@ -112,26 +112,23 @@ namespace Slingshot
                     catch (Exception e)
                     {
                         var c = current;
-                        var ct = 3;
-                        while (ct-- != 0 && c.Parent != null)
-                        {
-                            c = c.Parent;
-                        }
                         var cc = ConsoleColor.Green;
+                        var console = false;
                         if (scope.Output == Console.Out)
                         {
-                           cc =  Console.ForegroundColor;
-                           Console.ForegroundColor = ConsoleColor.Red;
+                            console = true;
+                            cc =  Console.ForegroundColor;
+                            Console.ForegroundColor = ConsoleColor.Yellow;
                         }
-                     //   c.Print(scope.Output);
+                        c.Print(scope.Output);
                         scope.Output.WriteLine();
-                        Console.WriteLine(e);
-                        Console.WriteLine(e.StackTrace);
-                        if (scope.Output == Console.Out)
-                        {
+                        if (console)
+                            Console.ForegroundColor = ConsoleColor.Red;
+                        if (console)
                             Console.ForegroundColor = cc;
-                        }
-                        throw e;
+
+                        Console.WriteLine("=====================" + current.Token.Value);
+                        throw;
                     }
                 }
             }
