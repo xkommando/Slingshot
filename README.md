@@ -57,6 +57,27 @@ Algorithem Library example
 ```
 Mathematics and Statistics Library example
 ```Lisp
+// test prime numbers with recursive function
+
+(require while set! even? integer?)
+(def r-prime? 
+	(func(a)
+		(if (or (not (integer? a)) 
+				(< a 2)
+				(even? a)
+			) False
+			{(def _f (func(b)
+						(if (< a (* b b))
+							True
+							(if  (== 0 (% a b))
+								False
+								(_f (+ b 2))
+							)
+						)))
+			(_f 3)}
+		)))
+
+// test prime numbers with iterative function
 (def prime? 
 	(func(a)
 		(if (or (not (integer? a)) 
