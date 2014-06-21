@@ -70,10 +70,9 @@
 			{(def _f (func(b)
 						(if (< a (* b b))
 							True
-							(if  (== 0 (% a b))
+						elif  (== 0 (% a b))
 								False
-								(_f (+ b 2))
-							)
+							(_f (+ b 2))
 						)
 					)
 			)

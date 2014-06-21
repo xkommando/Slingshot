@@ -66,11 +66,35 @@ namespace Slingshot
                     var nsc = new SSScope(scope);
                     return new SSFunction(body, parameters, nsc);
                 }
-
+                /// <summary>
+                /// if ()
+                ///    ()
+                /// elif ()
+                ///     ()
+                /// ()
+                /// </summary>
+                /// <param name="exps"></param>
+                /// <param name="scope"></param>
+                /// <returns></returns>
                 public static SSObject If(SSExpression[] exps, SSScope scope)
                 {
-                    (exps.Length == 3).OrThrows("expect three parameters");
-                    return (SSBool) exps[0].Evaluate(scope) ? exps[1].Evaluate(scope) : exps[2].Evaluate(scope);
+
+                    if (exps[0].Evaluate(scope) as SSBool)
+                        return exps[1].Evaluate(scope);
+                    else if (exps[2].Token.Type == TokenType.ElIf)
+                    {
+                        var idx = 2;
+                        do
+                        {
+                            idx++;
+                            if (exps[idx].Evaluate(scope) as SSBool)
+                                return exps[++idx].Evaluate(scope);
+                            idx += 2;
+                        } while (exps[idx].Token.Type == TokenType.ElIf);
+                        return exps[idx].Evaluate(scope);
+                    }
+                    else
+                        return exps[2].Evaluate(scope);
                 }
 
                 public static SSObject While(SSExpression[] exps, SSScope scope)

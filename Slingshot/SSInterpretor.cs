@@ -17,15 +17,16 @@ namespace Slingshot
             public static void Main(string[] args)
             {
 
-                Console.WriteLine(SSScope.BuiltinFunctions.Count);
+               // Console.WriteLine(SSScope.BuiltinFunctions.Count);
 
-                Console.WriteLine("\r\n\t\tSlingshot v0.3\t\t\r\n\r\n");
+                Console.WriteLine("\r\n\t\tSlingshot version 0.3\t\t\r\n\r\n");
 
                 GLOBAL_SCOPE
                    .LoadLib("basic.ss")
                    .LoadLib("algo.ss")
                    .LoadLib("math.ss")
                    .LoadLib("statistic.ss")
+                 //  .LoadLib("chinese.ss")
                    .InterpretingInConsole();
 
             }
@@ -53,10 +54,9 @@ namespace Slingshot
                 .BuildIn("error", Functions.Flow.Error)
 
                 // IO
-                .BuildIn("open-file", Functions.IO.OpenFile)
+                .BuildIn("file", Functions.IO.OpenFile)
                 .BuildIn("read-str", Functions.IO.ReadStr)
                 .BuildIn("load", Functions.IO.Load)
-
 
                 // misc functions
                 .BuildIn("debug", Functions.Misc.Debug)

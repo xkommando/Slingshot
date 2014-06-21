@@ -39,10 +39,9 @@
 	(func (ls atom)
 		(if (null? ls)
 			False
-			(if (eq? atom (car ls))
-				True
-				(contains? (cdr ls) atom)
-			)
+		elif (eq? atom (car ls))
+			True
+			(contains? (cdr ls) atom)
 		)
 	)
 )
@@ -52,9 +51,7 @@
 	(func(ls f len)
 		(if (== 0 len)
 			ls
-			{ // (log ls len)
-				(gen-list (append ls (f ls) ) f (- len 1))
-			}
+			(gen-list (append ls (f ls) ) f (- len 1))
 		)
 	)
 )
@@ -62,11 +59,22 @@
 (def first-index-of
 	(func(ls idx atom)
 		(if (null? ls)
-			-1
-			(if (eq? (car ls) atom)
+				-1
+		elif (eq? (car ls) atom)
 				idx
-				(index-of (cdr ls) (+ idx 1) atom)
-			)
+			(index-of (cdr ls) (+ idx 1) atom)
 		)
 	)
 )
+
+(def count
+	(func(ls init pred?)
+ 		(if (null? ls)
+ 			init
+ 		elif (pred? (car ls))
+ 				(count (cdr ls) (+ init 1) pred?)
+ 			(count (cdr ls) init pred?)
+ 		)
+ 	)
+)
+//if else if 

@@ -82,6 +82,7 @@ namespace Slingshot
             UnDef,                // undef
             Func,               // func
             If,
+            ElIf,
             //Begin,              // begin
             List,               // list
             //Else,

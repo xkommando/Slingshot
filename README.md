@@ -88,7 +88,7 @@ Mathematics and Statistics Library example
 				(def ret True)
 				{	(while (< (* d d) a)
 						(if (eq? 0 (% a d))
-							{ (debug d)
+							{// (debug d)
 								(set! ret False)
 								break
 							}

@@ -20,10 +20,9 @@
 	(func (pred? ls)
 		(if (null? ls)
 			ls
-			(if (pred? (car ls))
+		elif (pred? (car ls))
 				(cons (car ls) (filter pred? (cdr ls)))
-				(filter pred? (cdr ls))
-			)
+			(filter pred? (cdr ls))
 		)
 	)
 )
@@ -66,8 +65,8 @@
 			{ (def _pivot (car ls) )
 				(def _left (filter  (func(a)(< a _pivot))  ls ) )
 				(def _right (filter  (func(a)(< _pivot a)) ls ) )
-				(append (append (q-sort _left) _pivot)
-							(q-sort _right)
+				(append (q-sort _left)
+				 	(cons _pivot (q-sort _right) )
 				)
 			}
 		)
@@ -83,8 +82,8 @@
 			{ (def _pivot (car ls) )
 				(def _left (filter  (func(a)(compare a _pivot))  ls ) )
 				(def _right (filter  (func(a)(compare _pivot a)) ls ) )
-				(append (append (qsort _left compare) _pivot)
-							(qsort _right compare)
+				(append (qsort _left compare)
+					(cons _pivot (qsort _right compare))
 				)
 			}
 		)
@@ -106,15 +105,14 @@
 							//(debug _m (elem-at ls _m))
 							(if (< (elem-at ls _m) val)
 								(_f _m _max_idx)
-								(if (< val (elem-at ls _m))
+							elif (< val (elem-at ls _m))
 									(_f _min_idx _m)
-									_m
-									)
-								)
+								_m
+							)
 						}
-						)
-					)
-				)
+						)// if 
+					)// functions
+				)// def
 				(_f 0 (length ls))
 			}
 		)

@@ -105,10 +105,9 @@
 		(def _f(func(_at _ls)
 				(if (null? _ls)
 					_at
-					(if(compare _at (car _ls))
+				elif(compare _at (car _ls))
 						(_f _at (cdr _ls))
-						(_f (car _ls) (cdr _ls))
-					)
+					(_f (car _ls) (cdr _ls))
 				)
 			)
 		)
@@ -117,17 +116,5 @@
 			(_f (car ls) (cdr ls))
 		)
 	}
-	)
-)
-
-(def count
-	(func(ls init pred?)
-		(if (null? ls)
-			init
-			(if (pred? (car ls))
-				(count (cdr ls) (+ init 1) pred?)
-				(count (cdr ls) init pred?)
-			)
-		)
 	)
 )

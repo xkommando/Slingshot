@@ -46,7 +46,7 @@ namespace Slingshot
                 {"func" , new CodeToken(TokenType.Func, "func")},
 
                 {"if" , new CodeToken(TokenType.If, "if")},
-             //   {"?" , new CodeToken(TokenType.QMark, "?")},
+                {"elif" , new CodeToken(TokenType.ElIf, "elif")},
                 
               //  {"begin" , new CodeToken(TokenType.Begin, "begin")},
                 {":" , new CodeToken(TokenType.Colon, ":")},

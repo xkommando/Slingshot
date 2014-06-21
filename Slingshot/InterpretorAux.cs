@@ -32,32 +32,31 @@ namespace Slingshot
 
             public static void BulkEval(this SSScope scope, string src)
             {
-                if (src.NotEmpty())
+                if (!src.NotEmpty()) return;
+
+                var file = new CodeFile();
+                var syntax = new SyntaxAnalyzer();
+                file.SourceCode = src;
+                syntax.Take(file);
+                if (syntax.ErrorList.Count > 0)
                 {
-                    var file = new CodeFile();
-                    var syntax = new SyntaxAnalyzer();
-                    file.SourceCode = src;
-                    syntax.Take(file);
-                    if (syntax.ErrorList.Count > 0)
-                    {
-                        scope.Output.WriteLine("Errors:");
-                        syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a));
-                    }
-                    try
-                    {
-                        // prevent lazy eval
-                        foreach (var exp in syntax.Expressions)
-                            exp.Evaluate(scope);
-                    }//
-                    catch (Exception ex)
-                    {
-                        scope.Output.WriteLine("Failed to evaluate");
-                        scope.Output.WriteLine(ex);
-                        ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
-                    }
-                    //    scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
-                    //       .Fmt(a.Key, a.Value.GetType())));
+                    scope.Output.WriteLine("Errors:");
+                    syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a.ToString()));
                 }
+                try
+                {
+                    // prevent lazy eval
+                    foreach (var exp in syntax.Expressions)
+                        exp.Evaluate(scope); //);
+                }//
+                catch (Exception ex)
+                {
+                    scope.Output.WriteLine("Failed to evaluate");
+                    scope.Output.WriteLine(ex);
+                    ex.StackTrace.Split('\r').Take(3).ForEach(a => scope.Output.WriteLine(a));
+                }
+                //    scope.VariableTable.ForEach(a => scope.Output.WriteLine(">>> Added {0} : {1} "
+                //       .Fmt(a.Key, a.Value.GetType())));
             }
 
             public static SSObject Cmd(this SSScope scope, List<SSExpression> exps)
