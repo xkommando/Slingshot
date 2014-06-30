@@ -39,6 +39,8 @@ namespace Slingshot
                 while (true)
                 {
                     var tok = current.Token;
+
+                //    current.Parent.Children.ForEach(a => Console.WriteLine(a.Token.Value));
                     try
                     {
                         switch (current.Token.Type)
@@ -75,11 +77,10 @@ namespace Slingshot
                                 return SSBool.True;
                             case TokenType.False:
                                 return SSBool.False;
+
                             case TokenType.Slingshot:
-                                Console.WriteLine(current.Token.Value);
-                                Console.WriteLine(current.Parent.Children.Count);
-                                current.Parent.Children.ForEach(a=>Console.WriteLine(a.Token.Value));
-                                return true;//scope.Cmd(current.Children);
+                                return current.Parent.Children.Skip(1).ParseCmd(scope);
+
                             case TokenType.Identifier:
                                 return scope.Find(tok.Value);
                             default:

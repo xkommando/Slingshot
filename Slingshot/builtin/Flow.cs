@@ -113,7 +113,7 @@ namespace Slingshot
                 public static SSObject Loop(SSExpression[] exps, SSScope scope)
                 {
                     (exps.Length == 2).OrThrows("expect two parameters");
-                    int num = (SSInteger) exps[0].Evaluate(scope);
+                    int num = exps[0].Evaluate(scope) as SSInteger;
                     SSObject ret = null;
                     while (num-- != 0)
                     {

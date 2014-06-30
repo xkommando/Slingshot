@@ -35,32 +35,31 @@ Algorithem Library example
 		})))
 
 // return integer -1 if search failed 
+(require elem-at)
 (def bin-search
 	(func(ls val)
 		(if(null? ls)
 			-1
 			{(def _f(func(_min_idx _max_idx)
-					(if (< (- _max_idx _min_idx) 2)
-						-1
-						{(def _m (to-int (/ (+ _max_idx _min_idx) 2)))
-							//(debug _m (elem-at ls _m))
-							(if (< (elem-at ls _m) val)
-								(_f _m _max_idx)
-								(if (< val (elem-at ls _m))
-									(_f _min_idx _m)
-									_m
-								))
-						}))
-				)
+				(if (< (- _max_idx _min_idx) 2)
+					-1
+					{(def _m (to-int (/ (+ _max_idx _min_idx) 2)))
+						(if (< (elem-at ls _m) val)
+							(_f _m _max_idx)
+						elif (< val (elem-at ls _m))
+								(_f _min_idx _m)
+						_m
+						)})// if 
+					)// functions
+				)// def
 				(_f 0 (length ls))
 			})))
 ```
 Mathematics and Statistics Library example
 ```Lisp
-// test prime numbers with recursive function
-
+// test prime numbers recursively
 (require while set! even? integer?)
-(def r-prime? 
+(def r-prime?
 	(func(a)
 		(if (or (not (integer? a)) 
 				(< a 2)
@@ -69,15 +68,14 @@ Mathematics and Statistics Library example
 			{(def _f (func(b)
 						(if (< a (* b b))
 							True
-							(if  (== 0 (% a b))
+						elif  (== 0 (% a b))
 								False
-								(_f (+ b 2))
-							)
+							(_f (+ b 2))
 						)))
-			(_f 3)}
-		)))
+				(_f 3)
+			})))
 
-// test prime numbers with iterative function
+// test prime numbers iteratively
 (def prime? 
 	(func(a)
 		(if (or (not (integer? a)) 
@@ -88,8 +86,7 @@ Mathematics and Statistics Library example
 				(def ret True)
 				{	(while (< (* d d) a)
 						(if (eq? 0 (% a d))
-							{// (debug d)
-								(set! ret False)
+							{ (set! ret False)
 								break
 							}
 							(set! d (+ d 2))

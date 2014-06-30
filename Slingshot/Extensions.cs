@@ -150,6 +150,11 @@ namespace Slingshot
             foreach (var item in @enum) mapFunction(item);
         }
 
+        public static bool NotEmpty<T>(this IEnumerable<T> e)
+        {
+            return e != null && e.Any();
+        }
+
         #endregion
 
         #region general

@@ -37,11 +37,19 @@ namespace Slingshot
                 var file = new CodeFile();
                 var syntax = new SyntaxAnalyzer();
                 file.SourceCode = src;
-                syntax.Take(file);
-                if (syntax.ErrorList.Count > 0)
+                file.Parse();
+                if (file.ErrorList.Count > 0)
                 {
                     scope.Output.WriteLine("Errors:");
                     syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a.ToString()));
+                    return;
+                }
+                syntax.Take(file.TokenList);
+                if (syntax.ErrorList.NotEmpty())
+                {
+                    scope.Output.WriteLine("Errors:");
+                    syntax.ErrorList.ForEach(a => scope.Output.WriteLine(a.ToString()));
+                    return;
                 }
                 try
                 {
@@ -81,12 +89,17 @@ namespace Slingshot
                         {
                             file.SourceCode = code;
                             file.Parse();
-                            syntax.Take(file);
+                            if (file.ErrorList.NotEmpty())
+                                file.PrintErrors(Console.Out);
+                            syntax.Take(file.TokenList);
+                            if (syntax.ErrorList.NotEmpty())
+                                syntax.PrintErrors(Console.Out);
+
                             Console.ForegroundColor = ConsoleColor.Green;
                             
                             w.Reset();
                             w.Start();
-                            Console.WriteLine(">>> " + syntax.Expressions.Last().Evaluate(scope));
+                            Console.WriteLine(">>> " + syntax.Expressions.First().Evaluate(scope));
                             w.Stop();
                             Console.WriteLine(w.ElapsedMilliseconds + "ms");
                         }
@@ -162,6 +175,51 @@ namespace Slingshot
                 exp.Children.ForEach(a=>a.DoPrint(writer, --threshold));
             }
 
+            public static SSObject ParseCmd(this IEnumerable<SSExpression> cmd, SSScope scope)
+            {
+                foreach (var exp in cmd)
+                {
+                    switch (exp.Token.Value)
+                    {
+                        case "version?":
+                            return 0.3;
+
+                        case "author?":
+                            return "Cai Bowen: www.caibowen.com";
+
+                        case "license?":
+                            return "Apache License Version 2.0";
+
+                        case "closure?":
+                            var c = 0;
+                            SSScope cur = scope;
+                            do
+                            {
+                                cur.VariableTable.ForEach(
+                                    a => scope.Output.WriteLine("{0} : {1}".Fmt(a.Key, a.Value)));
+                                c += cur.VariableTable.Count;
+                                cur = cur.Parent;
+                            } while (cur != null);
+                            return c;
+
+                        case "scope?":
+                            scope.VariableTable.ForEach(a=>scope.Output.WriteLine("{0} : {1}".Fmt(a.Key, a.Value)));
+                            return scope.VariableTable.Count;
+
+                        case "builtin?":
+                            SSScope.BuiltinFunctions
+                                .ForEach(a => scope.Output.WriteLine(a.Key));
+                            return SSScope.BuiltinFunctions.Count;
+
+                        case "help":
+                            return "void";
+
+                        default:
+                            return "Slingshot Version 0.3";
+                    }
+                }
+                return true;
+            }
         }
     }
 

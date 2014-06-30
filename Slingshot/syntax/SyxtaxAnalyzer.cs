@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,19 +19,13 @@ namespace Slingshot
             public SyntaxAnalyzer()
             {
                 TokenList = new List<CodeToken>();
-                ErrorList = new List<CodeError>();
+                //ErrorList = new List<CodeError>();
                 Expressions = new List<SSExpression>();
             }
-            public void Take(CodeFile src)
-            {
-                src.Parse();
-                if (src.ErrorList.Count > 0)
-                {
-                    this.ErrorList = src.ErrorList;
-                    return;
-                }
 
-                this.TokenList = src.TokenList;
+            public void Take(List<CodeToken> toks)
+            {
+                this.TokenList = toks;
                 this.Parse();
             }
 
@@ -57,7 +52,9 @@ namespace Slingshot
                         case TokenType.RightCurlyBracket:
                             current = current.Parent;
                             break;
+
                         default:
+                            //Console.WriteLine("adding {0} {1}".Fmt(tok.Type, tok.Value));
                             current.Children.Add(new SSExpression(tok, current));
                             break;
                     }
@@ -69,9 +66,17 @@ namespace Slingshot
 
             public void ReSet()
             {
-                this.ErrorList.Clear();
                 this.TokenList.Clear();
                 this.Expressions.Clear();
+                if (ErrorList.NotEmpty()) 
+                    ErrorList.Clear();
+            }
+
+            public void PrintErrors(TextWriter writer)
+            {
+                writer.WriteLine("{0} Errors:".Fmt(ErrorList.Count));
+                this.ErrorList.ForEach(
+                    ce => writer.WriteLine(" {0} ", ce.ToString()));
             }
         }
     }
