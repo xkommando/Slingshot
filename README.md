@@ -122,3 +122,4 @@ Mathematics and Statistics Library example
 				0.5)
 			})))
 ```
+*in memory of an old friend in my childhood*
