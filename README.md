@@ -5,19 +5,26 @@ _A simple functional language implemented in C#_
 
 
 - no keywords, only functions: built-in functions and Slingshot functions.
-  'if else', 'while', 'hash' are built-in funcions, 'map' 'reduce' are Slingshot functions 
+  'def' 'if else' 'while' 'hash' are built-in funcions, 'map' 'reduce' are Slingshot functions 
 
 - every thing is a expression // except for comment
 
-- value is immutable:   (def a "behold a string of Slingshot")
+- value is immutable:  ``` (def a "behold an immutable string of Slingshot") ```
 
 - the value of {...} is the value of the last expression within {} : 
 
-(def a {(def b 2) (def c 3) (def d 4)}) // a is SSInteger 4
+```
+(def a {  
+    (def b 2) (def c 3) ( def d 4)  
+}) // a is SSInteger 4
+```
 
-- this is a list:   [1,   '2',   "3456789",   False,   ["new list" 'a' 5]   ]
+- this is a list:  ``` [1,   '2',   "3456789",   False,   ["nested list" 'a' 5]   ]```
 
-- functions can be defined anywhere: (def   f-1(  { (def   f-2()) } )  )
+- functions can be defined anywhere: 
+   ```(def   f-1(  
+           { (  def   f-2()  ) } 
+      ))```
 
 Code snippet from the Slingshot Standard Library
 
