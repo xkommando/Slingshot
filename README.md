@@ -5,27 +5,28 @@ _A simple functional language implemented in C#_
 
 
 - no keywords, only built-in functions and Slingshot functions.
-  'def' 'if else' 'while' 'hash' are built-in funcions, 'map' 'reduce' are Slingshot functions 
+  ``` 'def' 'if else' 'while' 'try catch'``` are built-in funcions, ```'map' 'reduce' ``` are Slingshot functions 
 
 - every thing is an expression // except for comment
 
 - value is immutable:  ``` (def a "behold an immutable string of Slingshot") ```
+  but can be set:  ``` (set! a 15e8) ```
 
 - the value of {...} is the value of the last expression within {} : 
-
 ```
 (def a {  
     (def b 2) (def c 3) ( def d 4)  
 }) // a is SSInteger 4
 ```
 
-- this is a list:  ``` [1  '2'  "3456789"  False  ["nested list" 'a' 5]  ]```
+- this is a list:  ``` [1  '2'  345.6789  False  ["nested list" 5e8]  ]```
 
 - functions can be defined anywhere: 
    ```(def   f-1(  
            { (  def   f-2()  ) } 
       ))```
 
+==========
 Code snippet from the Slingshot Standard Library
 
 ``` Lisp
@@ -57,6 +58,7 @@ Algorithem Library example
 		})))
 
 // return integer -1 if search failed 
+// the require function will check dependencies
 (require elem-at)
 (def bin-search
 	(func(ls val)
@@ -100,7 +102,7 @@ Mathematics and Statistics Library example
 // test prime numbers iteratively
 (def prime? 
 	(func(a)
-		(if (or (not (integer? a)) 
+		(if (or (not (integer? a))
 				(< a 2) 
 				(even? a) 
 			) False
